@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">SmartCity</string>
-    <string name="News">News</string>
-    <string name="Shops">Shops</string>
-    <string name="Chat">Chat</string>
+    <string name="actualites">News</string>
+    <string name="commerces">Shops</string>
+    <string name="chat">Chat</string>
+    <string name="météo">meteo</string>
+    <string name="news" translatable="false">news</string>
+    <string name="alarmes">alarms</string>
+    <string name="agenda" translatable="false">agenda</string>
+    <string name="liste_commerces">shops list</string>
+    <string name="offres">promotions</string>
+    <string name="mes_groupes">my groups</string>
+    <string name="rechercher">search</string>
+    <string name="filtrer">filter</string>
 </resources>

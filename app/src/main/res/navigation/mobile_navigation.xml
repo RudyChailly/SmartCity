@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.smartcity.ui.news.NewsFragment"
-        android:label="@string/News"
-        tools:layout="@layout/fragment_news" />
+        android:name="com.example.smartcity.ui.actualites.ActualitesFragment"
+        android:label="@string/actualites"
+        tools:layout="@layout/fragment_actualites" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.example.smartcity.ui.shops.ShopsFragment"
-        android:label="@string/Shops"
-        tools:layout="@layout/fragment_shops" />
+        android:name="com.example.smartcity.ui.commerces.CommercesFragment"
+        android:label="@string/commerces"
+        tools:layout="@layout/fragment_commerces" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.smartcity.ui.chat.ChatFragment"
-        android:label="@string/Chat"
+        android:label="@string/chat"
         tools:layout="@layout/fragment_chat" />
 </navigation>

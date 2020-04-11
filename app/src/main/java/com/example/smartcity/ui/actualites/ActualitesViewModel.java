@@ -1,14 +1,14 @@
-package com.example.smartcity.ui.news;
+package com.example.smartcity.ui.actualites;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class NewsViewModel extends ViewModel {
+public class ActualitesViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public NewsViewModel() {
+    public ActualitesViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is home fragment");
     }

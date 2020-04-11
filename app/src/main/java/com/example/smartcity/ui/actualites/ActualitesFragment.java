@@ -1,53 +1,49 @@
-package com.example.smartcity.ui.chat;
+package com.example.smartcity.ui.actualites;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
-import com.example.smartcity.ui.chat.groupes.ChatGroupesFragment;
-import com.example.smartcity.ui.chat.recherche.ChatRechercheFragment;
-import com.example.smartcity.ui.commerces.CommercesFragment;
-import com.example.smartcity.ui.commerces.liste.CommercesListeFragment;
-import com.example.smartcity.ui.commerces.offres.CommercesOffresFragment;
+import com.example.smartcity.ui.actualites.agenda.ActualitesAgendaFragment;
+import com.example.smartcity.ui.actualites.alarmes.ActualitesAlarmesFragment;
+import com.example.smartcity.ui.actualites.meteo.ActualitesMeteoFragment;
+import com.example.smartcity.ui.actualites.news.ActualitesNewsFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatFragment extends Fragment {
+public class ActualitesFragment extends Fragment {
 
-    private ChatViewModel chatViewModel;
+    private ActualitesViewModel actualitesViewModel;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        chatViewModel = ViewModelProviders.of(this).get(ChatViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_chat, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        actualitesViewModel = ViewModelProviders.of(this).get(ActualitesViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_actualites, container, false);
         ViewPager viewPager = (ViewPager)root.findViewById(R.id.view_pager);
         setViewPager(viewPager);
 
-        ((TabLayout)root.findViewById(R.id.chat_tabs)).setupWithViewPager(viewPager);
+        ((TabLayout)root.findViewById(R.id.actualites_tabs)).setupWithViewPager(viewPager);
         return root;
     }
 
     private void setViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter( getChildFragmentManager());
 
-        adapter.addFragment(new ChatGroupesFragment(), getResources().getString(R.string.mes_groupes).toUpperCase());
-        adapter.addFragment(new ChatRechercheFragment(), getResources().getString(R.string.rechercher).toUpperCase());
+        adapter.addFragment(new ActualitesMeteoFragment(), getResources().getString(R.string.météo).toUpperCase());
+        adapter.addFragment(new ActualitesNewsFragment(), getResources().getString(R.string.news).toUpperCase());
+        adapter.addFragment(new ActualitesAlarmesFragment(), getResources().getString(R.string.alarmes).toUpperCase());
+        adapter.addFragment(new ActualitesAgendaFragment(), getResources().getString(R.string.agenda).toUpperCase());
         viewPager.setAdapter(adapter);
         Log.d("SETVIEWPAGER", "OUI");
     }

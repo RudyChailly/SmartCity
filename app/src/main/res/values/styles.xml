@@ -1,10 +1,10 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:textColorPrimary">@color/blue</item>
-        <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:textColorSecondary">@color/black</item>
         <item name="actionMenuTextColor">@android:color/white</item>
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/white</item>
@@ -12,13 +12,19 @@
         <item name="android:titleTextStyle"> @color/black</item>
     </style>
 
-    <style name="Toolbar" parent="Theme.AppCompat">
+    <style name="Toolbar" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
         <item name="android:textColorPrimary">@color/white</item>
         <item name="colorPrimary">@color/blue</item>
         <item name="colorPrimaryDark">@color/darkBlue</item>
-        <item name="colorAccent">@color/black</item>
         <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="Tabs" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/white</item>
+        <item name="android:textColorPrimary">@color/blue</item>
+        <item name="android:textColorSecondary">@color/grey</item>
+        <item name="colorAccent">@color/blue</item>
     </style>
 
     <style name="BottomNavMenu" parent="Theme.AppCompat.Light">

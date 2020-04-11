@@ -1,4 +1,4 @@
-package com.example.smartcity.ui.chat;
+package com.example.smartcity.ui.commerces;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -18,9 +18,13 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
+import com.example.smartcity.ui.actualites.ActualitesFragment;
+import com.example.smartcity.ui.actualites.agenda.ActualitesAgendaFragment;
+import com.example.smartcity.ui.actualites.alarmes.ActualitesAlarmesFragment;
+import com.example.smartcity.ui.actualites.meteo.ActualitesMeteoFragment;
+import com.example.smartcity.ui.actualites.news.ActualitesNewsFragment;
 import com.example.smartcity.ui.chat.groupes.ChatGroupesFragment;
 import com.example.smartcity.ui.chat.recherche.ChatRechercheFragment;
-import com.example.smartcity.ui.commerces.CommercesFragment;
 import com.example.smartcity.ui.commerces.liste.CommercesListeFragment;
 import com.example.smartcity.ui.commerces.offres.CommercesOffresFragment;
 import com.google.android.material.tabs.TabLayout;
@@ -28,26 +32,25 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatFragment extends Fragment {
+public class CommercesFragment extends Fragment {
 
-    private ChatViewModel chatViewModel;
+    private CommercesViewModel commercesViewModel;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        chatViewModel = ViewModelProviders.of(this).get(ChatViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_chat, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        commercesViewModel = ViewModelProviders.of(this).get(CommercesViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_commerces, container, false);
         ViewPager viewPager = (ViewPager)root.findViewById(R.id.view_pager);
         setViewPager(viewPager);
 
-        ((TabLayout)root.findViewById(R.id.chat_tabs)).setupWithViewPager(viewPager);
+        ((TabLayout)root.findViewById(R.id.commerces_tabs)).setupWithViewPager(viewPager);
         return root;
     }
 
     private void setViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter( getChildFragmentManager());
 
-        adapter.addFragment(new ChatGroupesFragment(), getResources().getString(R.string.mes_groupes).toUpperCase());
-        adapter.addFragment(new ChatRechercheFragment(), getResources().getString(R.string.rechercher).toUpperCase());
+        adapter.addFragment(new CommercesListeFragment(), getResources().getString(R.string.liste_commerces).toUpperCase());
+        adapter.addFragment(new CommercesOffresFragment(), getResources().getString(R.string.offres).toUpperCase());
         viewPager.setAdapter(adapter);
         Log.d("SETVIEWPAGER", "OUI");
     }

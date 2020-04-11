@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SmartCity</string>
-    <string name="Chat">Chat</string>
-    <string name="News">Actualités</string>
-    <string name="Shops">Commerces</string>
+    <string name="chat">Chat</string>
+    <string name="actualites">Actualités</string>
+    <string name="commerces">Commerces</string>
+    <string name="météo">météo</string>
+    <string name="alarmes">alarmes</string>
+    <string name="liste_commerces">Liste commerces</string>
+    <string name="offres">offres</string>
+    <string name="mes_groupes">mes groupes</string>
+    <string name="rechercher">rechercher</string>
+    <string name="filtrer">filtrer</string>
 </resources>

@@ -1,14 +1,14 @@
-package com.example.smartcity.ui.shops;
+package com.example.smartcity.ui.commerces;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class ShopsViewModel extends ViewModel {
+public class CommercesViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public ShopsViewModel() {
+    public CommercesViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is dashboard fragment");
     }
