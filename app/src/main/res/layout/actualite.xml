@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="15dp">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#aaaaaa" />
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="270dp"
+        android:src="@drawable/placeholder"/>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="15dp"
+        android:background="@color/white"
+        android:paddingVertical="5dp">
+
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/actualite_titre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="22dp"
+            android:text="Titre"
+            android:textColor="#000"
+            android:textStyle="bold"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:paddingBottom="10dp"
+        android:paddingHorizontal="14dp">
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/actualite_source"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:text="Source"
+            android:layout_weight="1"
+            android:textColor="#313131"
+            />
+
+        <TextView
+            android:layout_weight="3"
+            android:id="@+id/actualite_date"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="18dp"
+            android:text="30/03/2020"
+            android:visibility="visible"
+            android:gravity="end|center_vertical"/>
+
+    </LinearLayout>
+
+</LinearLayout>

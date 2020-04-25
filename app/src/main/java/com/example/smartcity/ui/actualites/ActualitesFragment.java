@@ -45,7 +45,6 @@ public class ActualitesFragment extends Fragment {
         adapter.addFragment(new ActualitesAlarmesFragment(), getResources().getString(R.string.alarmes).toUpperCase());
         adapter.addFragment(new ActualitesAgendaFragment(), getResources().getString(R.string.agenda).toUpperCase());
         viewPager.setAdapter(adapter);
-        Log.d("SETVIEWPAGER", "OUI");
     }
 
     public class ViewPagerAdapter extends FragmentPagerAdapter {
