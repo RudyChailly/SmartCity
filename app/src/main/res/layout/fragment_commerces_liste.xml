@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
+    android:id="@+id/fragment_commerces_liste"
     android:layout_height="match_parent">
 
     <ScrollView
@@ -21,7 +22,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:textSize="30dp"
-                android:background="@color/background"/>
+                android:background="@color/background"
+                android:paddingBottom="15dp"
+                android:clipToPadding="false"/>
 
         </LinearLayout>
 

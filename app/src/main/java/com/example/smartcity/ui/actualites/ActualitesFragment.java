@@ -18,6 +18,7 @@ import com.example.smartcity.ui.actualites.agenda.ActualitesAgendaFragment;
 import com.example.smartcity.ui.actualites.alarmes.ActualitesAlarmesFragment;
 import com.example.smartcity.ui.actualites.meteo.ActualitesMeteoFragment;
 import com.example.smartcity.ui.actualites.news.ActualitesNewsFragment;
+import com.example.smartcity.ui.commerces.CommercesFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;

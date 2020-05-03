@@ -39,7 +39,9 @@ public class OffreAdapter extends ArrayAdapter<Offre> {
         Offre offre = getItem(position);
         viewHolder.intitule.setText(offre.getIntituleCourt());
         viewHolder.description.setText(offre.getDescription());
-        viewHolder.commerce.setText(offre.getCommerce().getNom());
+        if (offre.getCommerce() != null) {
+            viewHolder.commerce.setText(offre.getCommerce().getNom());
+        }
         viewHolder.prix.setText(offre.getPrix()+" €");
 
         // TODO: viewHolder.image

@@ -15,6 +15,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
 import com.example.smartcity.models.commerce.Commerce;
 import com.example.smartcity.models.commerce.offre.Offre;
@@ -54,10 +55,24 @@ public class CommercesOffresFragment extends Fragment {
     }
 
     public void getOffres() {
-        offres = new ArrayList<Offre>();
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = "http://10.0.2.2:8888/offres";
+        ArrayList<Offre> offresRecuperees = ((MainActivity)getActivity()).getOffres();
+        if (offresRecuperees == null) {
+            offres = new ArrayList<Offre>();
+            RequestQueue queue = Volley.newRequestQueue(getContext());
+            queue.add(requestAllCommerces());
+            queue.add(requestOffres());
+        }
+        else {
+            if (offreAdapter.getCount() == 0) {
+                this.offres = offresRecuperees;
+                offreAdapter.addAll(offresRecuperees);
+                offreAdapter.notifyDataSetChanged();
+            }
+        }
+    }
 
+    public JsonArrayRequest requestOffres() {
+        String url = "http://10.0.2.2:8888/utilisateurs/0/offres";
         JsonArrayRequest offresRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -65,8 +80,8 @@ public class CommercesOffresFragment extends Fragment {
                         for (int i = 0; i < response.length(); i++) {
                             try {
                                 JSONObject jsonObject = response.getJSONObject(i);
-                                Offre offre = new Offre(jsonObject.getInt("commerce"), jsonObject.getString("intitule"), jsonObject.getString("description"), jsonObject.getString("date"), jsonObject.getDouble("prix"));
-                                offre.setCommerce(commerces);
+                                Offre offre = new Offre(jsonObject.getString("intitule"), jsonObject.getString("description"), jsonObject.getString("date"), jsonObject.getDouble("prix"));
+                                offre.setCommerce(jsonObject.getInt("commerce"), ((MainActivity)getActivity()).getAllCommerces());
                                 offreAdapter.add(offre);
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -82,11 +97,10 @@ public class CommercesOffresFragment extends Fragment {
                     }
                 }
         );
-        queue.add(getCommerces());
-        queue.add(offresRequest);
+        return offresRequest;
     }
 
-    public JsonArrayRequest getCommerces() {
+    public JsonArrayRequest requestAllCommerces() {
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url = "http://10.0.2.2:8888/commerces";
 

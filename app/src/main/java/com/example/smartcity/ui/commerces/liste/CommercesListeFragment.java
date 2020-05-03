@@ -15,6 +15,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
 import com.example.smartcity.models.actualite.Actualite;
 import com.example.smartcity.models.commerce.Commerce;
@@ -25,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 
 public class CommercesListeFragment extends Fragment {
 
@@ -52,11 +54,24 @@ public class CommercesListeFragment extends Fragment {
     }
 
     public void getCommerces() {
-        commerces = new ArrayList<Commerce>();
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = "http://10.0.2.2:8888/commerces";
+        ArrayList<Commerce> commercesRecuperees = ((MainActivity)getActivity()).getCommerces();
+        if (commercesRecuperees == null) {
+            commerces = new ArrayList<Commerce>();
+            RequestQueue queue = Volley.newRequestQueue(getContext());
+            queue.add(requestCommerces());
+        }
+        else {
+            if (commerceAdapter.getCount() == 0) {
+                this.commerces = commercesRecuperees;
+                commerceAdapter.addAll(commercesRecuperees);
+                commerceAdapter.notifyDataSetChanged();
+            }
+        }
+    }
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+    public JsonArrayRequest requestCommerces() {
+        String url = "http://10.0.2.2:8888/utilisateurs/0/commerces";
+        JsonArrayRequest commercesRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -79,7 +94,7 @@ public class CommercesListeFragment extends Fragment {
                     }
                 }
         );
-        queue.add(jsonArrayRequest);
+        return commercesRequest;
     }
 
 }
