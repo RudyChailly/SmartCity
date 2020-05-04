@@ -30,18 +30,20 @@ public class ActualiteAdapter extends ArrayAdapter<Actualite> {
             viewHolder = new ActualiteViewHolder();
             viewHolder.titre = (TextView)convertView.findViewById(R.id.actualite_titre);
             viewHolder.source = (TextView)convertView.findViewById(R.id.actualite_source);
-            viewHolder.date = (TextView)convertView.findViewById(R.id.actualite_date);
+            viewHolder.interet = (TextView)convertView.findViewById(R.id.actualite_interet);
         }
         Actualite actualite = getItem(position);
         viewHolder.titre.setText(actualite.getTitre());
         viewHolder.source.setText(actualite.getSource());
-        viewHolder.date.setText(actualite.getDate());
+        if (actualite.getInteret() != null) {
+            viewHolder.interet.setText(actualite.getInteret().toString());
+        }
         return convertView;
     }
 
     private class ActualiteViewHolder {
         public TextView titre;
         public TextView source;
-        public TextView date;
+        public TextView interet;
     }
 }

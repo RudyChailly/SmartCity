@@ -54,7 +54,7 @@ public class CommercesListeFragment extends Fragment {
     }
 
     public void getCommerces() {
-        ArrayList<Commerce> commercesRecuperees = ((MainActivity)getActivity()).getCommerces();
+        ArrayList<Commerce> commercesRecuperees = ((MainActivity)getActivity()).getCommercesUtilisateur();
         if (commercesRecuperees == null) {
             commerces = new ArrayList<Commerce>();
             RequestQueue queue = Volley.newRequestQueue(getContext());
@@ -79,12 +79,16 @@ public class CommercesListeFragment extends Fragment {
                             try {
                                 JSONObject jsonObject = response.getJSONObject(i);
                                 Commerce commerce = new Commerce(jsonObject.getInt("id"), jsonObject.getString("nom"), jsonObject.getString("adresse"));
+                                commerce.setVille(jsonObject.getInt("ville"), ((MainActivity)getActivity()).getAllVilles());
+                                commerce.setInteret(jsonObject.getInt("interet"), ((MainActivity)getActivity()).getAllInterets());
                                 commerceAdapter.add(commerce);
+                                commerces.add(commerce);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
                         commerceAdapter.notifyDataSetChanged();
+                        ((MainActivity) getActivity()).setCommercesUtilisateurs(commerces);
                     }
                 },
                 new Response.ErrorListener() {

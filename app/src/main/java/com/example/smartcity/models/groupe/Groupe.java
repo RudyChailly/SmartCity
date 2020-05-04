@@ -1,39 +1,28 @@
-package com.example.smartcity.models.commerce;
+package com.example.smartcity.models.groupe;
 
 import com.example.smartcity.models.Interet;
 import com.example.smartcity.models.Ville;
 
 import java.util.ArrayList;
 
-public class Commerce {
+public class Groupe {
 
     private int id;
-    private String nom, adresse;
+    private String nom;
     private Ville ville;
     private Interet interet;
+    private boolean rejoint;
 
-    public Commerce(){}
+    public Groupe() {}
 
-    public Commerce(int id, String nom, String adresse) {
+    public Groupe(int id, String nom) {
         this.id = id;
         this.nom = nom;
-        this.adresse = adresse;
-    }
-
-    public int getId() {
-        return id;
+        rejoint = false;
     }
 
     public String getNom() {
         return nom;
-    }
-
-    public String getAdresse() {
-        return adresse;
-    }
-
-    public String toString() {
-        return nom + ":\n - " + id + "\n - " + adresse + "\n";
     }
 
     public void setVille(int idVille, ArrayList<Ville> villes) {
@@ -48,6 +37,18 @@ public class Commerce {
         return ville;
     }
 
+    public void rejoindre() {
+        rejoint = true;
+    }
+
+    public void quitter() {
+        rejoint = false;
+    }
+
+    public boolean estRejoint() {
+        return rejoint;
+    }
+
     public void setInteret(int idInteret, ArrayList<Interet> interets) {
         for (Interet interet : interets) {
             if (interet.getId() == idInteret) {
@@ -59,4 +60,5 @@ public class Commerce {
     public Interet getInteret() {
         return interet;
     }
+
 }

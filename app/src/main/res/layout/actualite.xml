@@ -57,11 +57,12 @@
 
         <TextView
             android:layout_weight="3"
-            android:id="@+id/actualite_date"
+            android:id="@+id/actualite_interet"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textSize="18dp"
-            android:text="30/03/2020"
+            android:text="Interet"
+            android:textColor="@color/blue"
             android:visibility="visible"
             android:gravity="end|center_vertical"/>
 

@@ -1,8 +1,13 @@
 package com.example.smartcity.models.actualite;
 
+import com.example.smartcity.models.Interet;
+
+import java.util.ArrayList;
+
 public class Actualite {
 
     private String titre, url, date, source;
+    private Interet interet;
 
     public Actualite(){}
 
@@ -31,6 +36,18 @@ public class Actualite {
 
     public String toString() {
         return titre + ":\n - " + source + "\n - " + date + "\n";
+    }
+
+    public void setInteret(int idInteret, ArrayList<Interet> interets) {
+        for (Interet interet : interets) {
+            if (interet.getId() == idInteret) {
+                this.interet = interet;
+            }
+        }
+    }
+
+    public Interet getInteret() {
+        return interet;
     }
 
 }

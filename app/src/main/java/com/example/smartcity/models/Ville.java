@@ -18,4 +18,8 @@ public class Ville {
         return this.id;
     }
 
+    public String toString() {
+        return this.code+", "+this.nom;
+    }
+
 }

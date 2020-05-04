@@ -32,13 +32,14 @@ public class CommerceAdapter  extends ArrayAdapter<Commerce> {
         if (viewHolder == null) {
             viewHolder = new CommerceViewHolder();
             viewHolder.nom = (TextView)convertView.findViewById(R.id.commerce_nom);
-            viewHolder.adresse = (TextView)convertView.findViewById(R.id.commerce_adresse);
+            viewHolder.interet = (TextView)convertView.findViewById(R.id.commerce_interet);
+            viewHolder.ville = (TextView) convertView.findViewById(R.id.commerce_ville);
             viewHolder.suivi = (ImageView) convertView.findViewById(R.id.commerce_suivi);
         }
         Commerce commerce = getItem(position);
         viewHolder.nom.setText(commerce.getNom());
-        viewHolder.adresse.setText(commerce.getAdresse());
-
+        viewHolder.interet.setText(commerce.getInteret().toString());
+        viewHolder.ville.setText(commerce.getVille().toString());
         // TODO: viewHolder.suivi
 
         return convertView;
@@ -46,7 +47,8 @@ public class CommerceAdapter  extends ArrayAdapter<Commerce> {
 
     private class CommerceViewHolder {
         public TextView nom;
-        public TextView adresse;
+        public TextView interet;
+        public TextView ville;
         public ImageView suivi;
     }
 

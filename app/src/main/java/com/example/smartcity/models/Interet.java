@@ -19,4 +19,8 @@ public class Interet {
     public String getNom() {
         return nom;
     }
+
+    public String toString() {
+        return this.nom;
+    }
 }

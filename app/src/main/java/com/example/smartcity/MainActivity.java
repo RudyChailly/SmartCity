@@ -2,7 +2,6 @@ package com.example.smartcity;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -10,6 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.smartcity.models.groupe.Groupe;
 import com.example.smartcity.models.Interet;
 import com.example.smartcity.models.actualite.Actualite;
 import com.example.smartcity.models.commerce.Commerce;
@@ -32,10 +32,11 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Actualite> actualites;
-    private ArrayList<Commerce> commerces, allCommerces;
-    private ArrayList<Offre> offres;
-    private ArrayList<Interet> interets;
-    private ArrayList<Ville> villes;
+    private ArrayList<Commerce> commercesUtilisateur, allCommerces;
+    private ArrayList<Offre> offresUtilisateur;
+    private ArrayList<Interet> allInterets;
+    private ArrayList<Ville> allVilles;
+    private ArrayList<Groupe> groupesUtilisateur, groupesARejoindre;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +53,11 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        if (villes == null) {
-            queue.add(requestAllVilles());
-        }
-        if (interets == null) {
+        if (allInterets == null) {
             queue.add(requestAllInterets());
+        }
+        if (allVilles == null) {
+            queue.add(requestAllVilles());
         }
         if (allCommerces == null) {
             queue.add(requestAllCommerces());
@@ -74,12 +75,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /********************** COMMERCES **********************/
-    public ArrayList<Commerce> getCommerces() {
-        return commerces;
+    public ArrayList<Commerce> getCommercesUtilisateur() {
+        return commercesUtilisateur;
     }
 
-    public void setCommerces(ArrayList<Commerce> commerces) {
-        this.commerces = commerces;
+    public void setCommercesUtilisateurs(ArrayList<Commerce> commerces) {
+        this.commercesUtilisateur = commerces;
     }
 
     public JsonArrayRequest requestAllCommerces() {
@@ -115,22 +116,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /********************** OFFRES **********************/
-    public ArrayList<Offre> getOffres() {
-        return offres;
+    public ArrayList<Offre> getOffresUtilisateur() {
+        return offresUtilisateur;
     }
 
-    public void setOffres(ArrayList<Offre> offres) {
-        this.offres = offres;
+    public void setOffresUtilisateur(ArrayList<Offre> offres) {
+        this.offresUtilisateur = offres;
     }
 
     /********************** VILLES **********************/
-    public ArrayList<Ville> getVilles() {
-        return villes;
+    public ArrayList<Ville> getAllVilles() {
+        return allVilles;
     }
 
     public JsonArrayRequest requestAllVilles() {
         String url = "http://10.0.2.2:8888/villes";
-        this.villes = new ArrayList<Ville>();
+        this.allVilles = new ArrayList<Ville>();
         JsonArrayRequest villesRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -139,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                             try {
                                 JSONObject jsonObject = response.getJSONObject(i);
                                 Ville ville = new Ville(jsonObject.getInt("id"), jsonObject.getString("nom"), jsonObject.getString("code"));
-                                villes.add(ville);
+                                allVilles.add(ville);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -157,13 +158,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /********************** INTERETS **********************/
-    public ArrayList<Interet> getInterets() {
-        return interets;
+    public ArrayList<Interet> getAllInterets() {
+        return allInterets;
     }
 
     public JsonArrayRequest requestAllInterets() {
         String url = "http://10.0.2.2:8888/interets";
-        this.interets = new ArrayList<Interet>();
+        this.allInterets = new ArrayList<Interet>();
         JsonArrayRequest interetsRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -172,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                             try {
                                 JSONObject jsonObject = response.getJSONObject(i);
                                 Interet interet = new Interet(jsonObject.getInt("id"), jsonObject.getString("nom"));
-                                interets.add(interet);
+                                allInterets.add(interet);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -187,6 +188,23 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
         return interetsRequest;
+    }
+
+    /********************** GROUPES **********************/
+    public ArrayList<Groupe> getGroupesUtilisateur() {
+        return groupesUtilisateur;
+    }
+
+    public void setGroupesUtilisateurs(ArrayList<Groupe> groupes) {
+        this.groupesUtilisateur = groupes;
+    }
+
+    public ArrayList<Groupe> getGroupesARejoindre() {
+        return groupesARejoindre;
+    }
+
+    public void setGroupesARejoindre(ArrayList<Groupe> groupes) {
+        this.groupesARejoindre = groupes;
     }
 
 }

@@ -16,7 +16,7 @@
         android:layout_weight="4">
 
         <ImageView
-            android:id="@+id/offre_image"
+            android:id="@+id/groupe_image"
             android:layout_width="fill_parent"
             android:layout_height="80dp"
             android:src="@drawable/placeholder_600"/>
@@ -33,54 +33,52 @@
 
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/offre_intitule"
+            android:layout_weight="1"
+            android:id="@+id/groupe_nom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="24dp"
-            android:text="Intitule"
+            android:text="Nom"
             android:textColor="#000"
             android:textStyle="bold"
             />
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/offre_description"
+            android:id="@+id/groupe_dernier_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16dp"
-            android:text="Description"
-            android:textStyle="italic"
+            android:text="Dernier message..."
             android:textColor="#313131"
             />
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/offre_commerce"
+            android:id="@+id/groupe_interet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:textSize="16dp"
-            android:text="Commerce"
-            android:textColor="#000"
+            android:text="Interet"
+            android:textColor="@color/blue"
             />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_weight="4">
+        android:layout_weight="4"
+        android:paddingHorizontal="20dp">
 
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/offre_prix"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/groupe_rejoint"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:paddingVertical="15dp"
             android:layout_gravity="center"
-            android:textSize="20dp"
-            android:text="10.00 €"
-            android:textStyle="bold"
-            android:textColor="@color/blue"
-            />
+            android:layout_weight="4"
+            android:src="@drawable/ic_person_add_black_24dp"
+            android:tint="@color/blue" />
 
     </LinearLayout>
 

@@ -59,6 +59,9 @@ public class ActualitesNewsFragment extends Fragment {
         if (actualitesRecuperees == null) {
             actualites = new ArrayList<Actualite>();
             RequestQueue queue = Volley.newRequestQueue(getContext());
+            if (((MainActivity) getActivity()).getAllInterets() == null) {
+                queue.add(((MainActivity) getActivity()).requestAllInterets());
+            }
             queue.add(requestActualites());
         }
         else {
@@ -80,14 +83,13 @@ public class ActualitesNewsFragment extends Fragment {
                             try {
                                 JSONObject jsonObject = response.getJSONObject(i);
                                 Actualite actualite = new Actualite(jsonObject.getString("titre"), jsonObject.getString("url"), jsonObject.getString("source"), jsonObject.getString("date"));
+                                actualite.setInteret(jsonObject.getInt("interet"), ((MainActivity)getActivity()).getAllInterets());
                                 actualiteAdapter.add(actualite);
                                 actualites.add(actualite);
-                                Log.d("Actualite n°" + i, actualite.toString());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
-                        //actualiteAdapter.addAll(actualites);
                         actualiteAdapter.notifyDataSetChanged();
                         ((MainActivity) getActivity()).setActualites(actualites);
                     }

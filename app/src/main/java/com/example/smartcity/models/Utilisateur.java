@@ -1,4 +1,4 @@
-package com.example.smartcity.models.utilisateur;
+package com.example.smartcity.models;
 
 import com.example.smartcity.models.Interet;
 import com.example.smartcity.models.commerce.Commerce;

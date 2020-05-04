@@ -55,7 +55,7 @@ public class CommercesOffresFragment extends Fragment {
     }
 
     public void getOffres() {
-        ArrayList<Offre> offresRecuperees = ((MainActivity)getActivity()).getOffres();
+        ArrayList<Offre> offresRecuperees = ((MainActivity)getActivity()).getOffresUtilisateur();
         if (offresRecuperees == null) {
             offres = new ArrayList<Offre>();
             RequestQueue queue = Volley.newRequestQueue(getContext());
@@ -83,11 +83,13 @@ public class CommercesOffresFragment extends Fragment {
                                 Offre offre = new Offre(jsonObject.getString("intitule"), jsonObject.getString("description"), jsonObject.getString("date"), jsonObject.getDouble("prix"));
                                 offre.setCommerce(jsonObject.getInt("commerce"), ((MainActivity)getActivity()).getAllCommerces());
                                 offreAdapter.add(offre);
+                                offres.add(offre);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
                         offreAdapter.notifyDataSetChanged();
+                        ((MainActivity) getActivity()).setOffresUtilisateur(offres);
                     }
                 },
                 new Response.ErrorListener() {

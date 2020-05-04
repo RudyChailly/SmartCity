@@ -6,16 +6,30 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="@color/white"
-    android:paddingBottom="10dp"
     >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dp"
+        android:layout_weight="4">
+
+        <ImageView
+            android:id="@+id/commerce_image"
+            android:layout_width="fill_parent"
+            android:layout_height="80dp"
+            android:src="@drawable/placeholder_600"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_weight="1"
-        android:paddingHorizontal="15dp"
-        android:paddingVertical="5dp">
+        android:layout_weight="2"
+        android:paddingTop="5dp"
+        android:paddingHorizontal="5dp">
 
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -23,20 +37,28 @@
             android:id="@+id/commerce_nom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="28dp"
+            android:textSize="24dp"
             android:text="Nom"
             android:textColor="#000"
             android:textStyle="bold"
             />
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/commerce_adresse"
+            android:id="@+id/commerce_ville"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18dp"
-            android:layout_weight="1"
-            android:text="Adresse"
+            android:textSize="16dp"
+            android:text="Ville"
             android:textColor="#313131"
+            />
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/commerce_interet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:text="Interet"
+            android:textColor="@color/blue"
             />
 
 
@@ -49,7 +71,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_weight="4"
-        android:paddingHorizontal="14dp">
+        android:paddingHorizontal="20dp">
 
         <!--<ImageView
             android:layout_width="match_parent"
