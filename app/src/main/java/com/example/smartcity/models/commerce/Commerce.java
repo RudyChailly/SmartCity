@@ -9,15 +9,19 @@ public class Commerce {
 
     private int id;
     private String nom, adresse;
+    private boolean abonne;
     private Ville ville;
     private Interet interet;
 
-    public Commerce(){}
+    public Commerce(){
+        this.abonne = false;
+    }
 
     public Commerce(int id, String nom, String adresse) {
         this.id = id;
         this.nom = nom;
         this.adresse = adresse;
+        this.abonne = false;
     }
 
     public int getId() {
@@ -32,8 +36,16 @@ public class Commerce {
         return adresse;
     }
 
-    public String toString() {
-        return nom + ":\n - " + id + "\n - " + adresse + "\n";
+    public void abonner(){
+        abonne = true;
+    }
+
+    public void desabonner() {
+        abonne = false;
+    }
+
+    public boolean estAbonne() {
+        return abonne;
     }
 
     public void setVille(int idVille, ArrayList<Ville> villes) {
@@ -58,5 +70,13 @@ public class Commerce {
 
     public Interet getInteret() {
         return interet;
+    }
+
+    public String toString() {
+        return nom + ":\n - " + id + "\n - " + adresse + "\n";
+    }
+
+    public boolean equals(Commerce commerce) {
+        return this.getId() == commerce.getId();
     }
 }

@@ -12,4 +12,6 @@
     <string name="mes_groupes">my groups</string>
     <string name="rechercher">search</string>
     <string name="filtrer">filter</string>
+    <string name="suivi">followed</string>
+    <string name="plus_suivi">unfollowed</string>
 </resources>

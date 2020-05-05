@@ -4,6 +4,8 @@ import com.example.smartcity.models.Interet;
 import com.example.smartcity.models.commerce.Commerce;
 import com.example.smartcity.models.Ville;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 
 public class Utilisateur {
@@ -33,10 +35,10 @@ public class Utilisateur {
         }
     }
 
-    /*public void setCommerces(JSONArray idCommerces, ArrayList<Commerce> commerces) {
-        for (Ville ville : villes) {
-            if (ville.getId() == idVille) {
-                this.ville = ville;
+    /*public void setCommerces(JSONArray idCommerce, ArrayList<Commerce> commerces) {
+        for (Commerce commerce : commerces) {
+            if (commerce.getId() == idCommerce) {
+                this.c = ville;
             }
         }
     }*/

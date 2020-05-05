@@ -14,12 +14,14 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
 import com.example.smartcity.models.actualite.Actualite;
 import com.example.smartcity.models.commerce.Commerce;
 import com.example.smartcity.models.commerce.CommerceAdapter;
+import com.example.smartcity.models.commerce.offre.Offre;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +34,6 @@ public class CommercesListeFragment extends Fragment {
 
     private ArrayList<Commerce> commerces;
     private ListView listView_commerces;
-    private CommerceAdapter commerceAdapter;
 
     public CommercesListeFragment(){
         commerces = new ArrayList<Commerce>();
@@ -47,58 +48,9 @@ public class CommercesListeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_commerces_liste, container, false);
         listView_commerces = (ListView) view.findViewById(R.id.liste_commerces);
-        commerceAdapter = new CommerceAdapter(getContext().getApplicationContext(), commerces);
-        listView_commerces.setAdapter(commerceAdapter);
-        getCommerces();
+        ((MainActivity)getActivity()).generateCommercesUtilisateur();
+        listView_commerces.setAdapter(((MainActivity)getActivity()).getCommerceAdapter());
         return view;
-    }
-
-    public void getCommerces() {
-        ArrayList<Commerce> commercesRecuperees = ((MainActivity)getActivity()).getCommercesUtilisateur();
-        if (commercesRecuperees == null) {
-            commerces = new ArrayList<Commerce>();
-            RequestQueue queue = Volley.newRequestQueue(getContext());
-            queue.add(requestCommerces());
-        }
-        else {
-            if (commerceAdapter.getCount() == 0) {
-                this.commerces = commercesRecuperees;
-                commerceAdapter.addAll(commercesRecuperees);
-                commerceAdapter.notifyDataSetChanged();
-            }
-        }
-    }
-
-    public JsonArrayRequest requestCommerces() {
-        String url = "http://10.0.2.2:8888/utilisateurs/0/commerces";
-        JsonArrayRequest commercesRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                Commerce commerce = new Commerce(jsonObject.getInt("id"), jsonObject.getString("nom"), jsonObject.getString("adresse"));
-                                commerce.setVille(jsonObject.getInt("ville"), ((MainActivity)getActivity()).getAllVilles());
-                                commerce.setInteret(jsonObject.getInt("interet"), ((MainActivity)getActivity()).getAllInterets());
-                                commerceAdapter.add(commerce);
-                                commerces.add(commerce);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        commerceAdapter.notifyDataSetChanged();
-                        ((MainActivity) getActivity()).setCommercesUtilisateurs(commerces);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERREUR", error.toString());
-                    }
-                }
-        );
-        return commercesRequest;
     }
 
 }

@@ -82,7 +82,7 @@
             android:src="@drawable/ic_near_me_black_24dp" />-->
 
         <ImageView
-            android:id="@+id/commerce_suivi"
+            android:id="@+id/commerce_abonne"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:paddingVertical="15dp"
