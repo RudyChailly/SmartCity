@@ -47,7 +47,7 @@ public class CommercesListeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_commerces_liste, container, false);
-        listView_commerces = (ListView) view.findViewById(R.id.liste_commerces);
+        listView_commerces = view.findViewById(R.id.liste_commerces);
         ((MainActivity)getActivity()).generateCommercesUtilisateur();
         listView_commerces.setAdapter(((MainActivity)getActivity()).getCommerceAdapter());
         return view;

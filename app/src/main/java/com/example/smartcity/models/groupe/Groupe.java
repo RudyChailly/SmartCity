@@ -3,15 +3,19 @@ package com.example.smartcity.models.groupe;
 import com.example.smartcity.models.Interet;
 import com.example.smartcity.models.Ville;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class Groupe {
 
     private int id;
     private String nom;
+    private boolean rejoint;
+
     private Ville ville;
     private Interet interet;
-    private boolean rejoint;
 
     public Groupe() {}
 
@@ -21,16 +25,22 @@ public class Groupe {
         rejoint = false;
     }
 
+    public Groupe(JSONObject jsonObject) throws JSONException {
+        if (jsonObject.has("id")) { this.id = jsonObject.getInt("id"); }
+        if (jsonObject.has("nom")) { this.nom = jsonObject.getString("nom"); }
+        this.rejoint = false;
+    }
+
+    public int getId() {
+        return id;
+    }
+
     public String getNom() {
         return nom;
     }
 
-    public void setVille(int idVille, ArrayList<Ville> villes) {
-        for (Ville ville : villes) {
-            if (ville.getId() == idVille) {
-                this.ville = ville;
-            }
-        }
+    public void setVille(Ville ville) {
+        this.ville = ville;
     }
 
     public Ville getVille() {
@@ -49,12 +59,8 @@ public class Groupe {
         return rejoint;
     }
 
-    public void setInteret(int idInteret, ArrayList<Interet> interets) {
-        for (Interet interet : interets) {
-            if (interet.getId() == idInteret) {
-                this.interet = interet;
-            }
-        }
+    public void setInteret(Interet interet) {
+        this.interet = interet;
     }
 
     public Interet getInteret() {

@@ -2,34 +2,58 @@ package com.example.smartcity.models.commerce.offre;
 
 import com.example.smartcity.models.commerce.Commerce;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class Offre {
 
-    private Commerce commerce;
-    private String intitutle, intituleCourt, description, date;
+    private String _id, intitule, intituleCourt, description, date;
     private double prix;
+    private Commerce commerce;
 
     public Offre(){}
 
-    public Offre(String intitutle, String description, String date, double prix) {
-        if (intitutle.length() > 18) {
-            intituleCourt = intitutle.substring(0,17)+"...";
+    public Offre(String _id, String intitule, String description, String date, double prix) {
+        if (intitule.length() > 18) {
+            intituleCourt = intitule.substring(0,17)+"...";
         }
         else {
-            intituleCourt = intitutle;
+            intituleCourt = intitule;
         }
-        this.intitutle = intitutle;
+        this._id = _id;
+        this.intitule = intitule;
         this.description = description;
         this.date = date;
         this.prix = prix;
         this.commerce = null;
     }
 
+    public Offre(JSONObject jsonObject) throws JSONException {
+        if (jsonObject.has("_id")) { this._id = jsonObject.getString("_id"); }
+        if (jsonObject.has("intitule")) {
+            this.intitule = jsonObject.getString("intitule");
+            if (intitule.length() > 18) {
+                intituleCourt = intitule.substring(0,17)+"...";
+            }
+            else {
+                intituleCourt = intitule;
+            }
+        }
+        if (jsonObject.has("description")) { this.description = jsonObject.getString("description"); }
+        if (jsonObject.has("date")) { this.date = jsonObject.getString("date"); }
+        if (jsonObject.has("prix")) { this.prix = jsonObject.getDouble("prix"); }
+    }
+
+    public String getId() {
+        return this._id;
+    }
+
     public Commerce getCommerce() { return commerce; }
 
     public String getIntitule() {
-        return intitutle;
+        return intitule;
     }
 
     public String getIntituleCourt() {
@@ -48,12 +72,20 @@ public class Offre {
         return prix;
     }
 
+    public void setCommerce(Commerce commerce) {
+        this.commerce = commerce;
+    }
+
     public void setCommerce(int idCommerce, ArrayList<Commerce> commerces) {
         for (Commerce commerce : commerces) {
             if (commerce.getId() == idCommerce) {
                 this.commerce = commerce;
             }
         }
+    }
+
+    public boolean equals(Offre offre) {
+        return this.getId().equals(offre.getId());
     }
 
 }

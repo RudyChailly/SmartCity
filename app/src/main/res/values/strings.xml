@@ -14,4 +14,11 @@
     <string name="filtrer">filter</string>
     <string name="suivi">followed</string>
     <string name="plus_suivi">unfollowed</string>
+    <string name="se_desabonner">Unfollow</string>
+    <string name="oui">Yes</string>
+    <string name="non">No</string>
+    <string name="quitter">Leave</string>
+    <string name="rejoint">joined</string>
+    <string name="quitté">left</string>
+    <string name="rejoindre">Join</string>
 </resources>

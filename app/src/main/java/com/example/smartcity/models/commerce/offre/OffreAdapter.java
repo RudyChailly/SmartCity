@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.smartcity.R;
+import com.example.smartcity.models.commerce.Commerce;
 
 import org.w3c.dom.Text;
 
@@ -47,6 +48,23 @@ public class OffreAdapter extends ArrayAdapter<Offre> {
         // TODO: viewHolder.image
 
         return convertView;
+    }
+
+    public boolean contains(Offre offre) {
+        for (int i = 0; i < this.getCount(); i++) {
+            if (this.getItem(i).equals(offre)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void removeOffre(Offre offre) {
+        for (int i = 0; i < this.getCount(); i++) {
+            if (this.getItem(i).equals(offre)) {
+                this.remove(this.getItem(i));
+            }
+        }
     }
 
     private class OffreViewHolder {

@@ -32,7 +32,6 @@ public class ActualitesNewsFragment extends Fragment {
 
     private ArrayList<Actualite> actualites;
     private ListView listView_actualites;
-    private  ActualiteAdapter actualiteAdapter;
 
     public ActualitesNewsFragment(){
         actualites = new ArrayList<Actualite>();
@@ -47,61 +46,14 @@ public class ActualitesNewsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_actualites_news, container, false);
-        listView_actualites = (ListView) view.findViewById(R.id.liste_actualites);
-        actualiteAdapter = new ActualiteAdapter(getContext().getApplicationContext(), actualites);
-        listView_actualites.setAdapter(actualiteAdapter);
-        getActualites();
+        listView_actualites = view.findViewById(R.id.liste_actualites);
+        ((MainActivity)getActivity()).generateActualitesUtilisateur();
+        listView_actualites.setAdapter(((MainActivity)getActivity()).getActualiteAdapter());
         return view;
     }
 
-    public void getActualites() {
-        ArrayList<Actualite> actualitesRecuperees = ((MainActivity)getActivity()).getActualites();
-        if (actualitesRecuperees == null) {
-            actualites = new ArrayList<Actualite>();
-            RequestQueue queue = Volley.newRequestQueue(getContext());
-            if (((MainActivity) getActivity()).getAllInterets() == null) {
-                queue.add(((MainActivity) getActivity()).requestAllInterets());
-            }
-            queue.add(requestActualites());
-        }
-        else {
-            if (actualiteAdapter.getCount() == 0) {
-                this.actualites = actualitesRecuperees;
-                actualiteAdapter.addAll(actualitesRecuperees);
-                actualiteAdapter.notifyDataSetChanged();
-            }
-        }
-    }
 
-    public JsonArrayRequest requestActualites() {
-        String url = "http://10.0.2.2:8888/utilisateurs/0/actualites";
-        JsonArrayRequest actualitesRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                Actualite actualite = new Actualite(jsonObject.getString("titre"), jsonObject.getString("url"), jsonObject.getString("source"), jsonObject.getString("date"));
-                                actualite.setInteret(jsonObject.getInt("interet"), ((MainActivity)getActivity()).getAllInterets());
-                                actualiteAdapter.add(actualite);
-                                actualites.add(actualite);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        actualiteAdapter.notifyDataSetChanged();
-                        ((MainActivity) getActivity()).setActualites(actualites);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERREUR", error.toString());
-                    }
-                }
-        );
-        return actualitesRequest;
-    }
+
+
 
 }

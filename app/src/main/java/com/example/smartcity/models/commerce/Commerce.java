@@ -3,6 +3,9 @@ package com.example.smartcity.models.commerce;
 import com.example.smartcity.models.Interet;
 import com.example.smartcity.models.Ville;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class Commerce {
@@ -21,6 +24,13 @@ public class Commerce {
         this.id = id;
         this.nom = nom;
         this.adresse = adresse;
+        this.abonne = false;
+    }
+
+    public Commerce(JSONObject jsonObject) throws JSONException {
+        if (jsonObject.has("id")) { this.id = jsonObject.getInt("id"); }
+        if (jsonObject.has("nom")) { this.nom = jsonObject.getString("nom"); }
+        if (jsonObject.has("adresse")) { this.adresse = jsonObject.getString("adresse"); }
         this.abonne = false;
     }
 
@@ -48,24 +58,16 @@ public class Commerce {
         return abonne;
     }
 
-    public void setVille(int idVille, ArrayList<Ville> villes) {
-        for (Ville ville : villes) {
-            if (ville.getId() == idVille) {
-                this.ville = ville;
-            }
-        }
+    public void setVille(Ville ville) {
+        this.ville = ville;
     }
 
     public Ville getVille() {
         return ville;
     }
 
-    public void setInteret(int idInteret, ArrayList<Interet> interets) {
-        for (Interet interet : interets) {
-            if (interet.getId() == idInteret) {
-                this.interet = interet;
-            }
-        }
+    public void setInteret(Interet interet) {
+        this.interet = interet;
     }
 
     public Interet getInteret() {

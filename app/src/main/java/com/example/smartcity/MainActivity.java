@@ -10,6 +10,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.smartcity.models.actualite.ActualiteAdapter;
 import com.example.smartcity.models.commerce.CommerceAdapter;
 import com.example.smartcity.models.commerce.offre.OffreAdapter;
 import com.example.smartcity.models.groupe.Groupe;
@@ -35,16 +36,17 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<Actualite> actualites;
+    private ArrayList<Actualite> actualitesUtilisateur;
     private ArrayList<Commerce> commercesUtilisateur, allCommerces;
     private ArrayList<Offre> offresUtilisateur;
-    private ArrayList<Interet> allInterets;
-    private ArrayList<Ville> allVilles;
+
     private ArrayList<Groupe> groupesUtilisateur, groupesInterets;
 
+    private ActualiteAdapter actualiteAdapter;
     private OffreAdapter offreAdapter;
     private CommerceAdapter commerceAdapter;
     private GroupeAdapter groupeUtilisateurAdapter, groupeInteretsAdapter;
+
 
 
     @Override
@@ -63,35 +65,47 @@ public class MainActivity extends AppCompatActivity {
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        if (allInterets == null) {
-            queue.add(requestAllInterets());
-        }
-        if (allVilles == null) {
-            queue.add(requestAllVilles());
-        }
-        if (allCommerces == null) {
-            queue.add(requestAllCommerces());
-        }
-
     }
 
-    /********************** VILLES **********************/
-    public JsonArrayRequest requestAllVilles() {
-        String url = "http://10.0.2.2:8888/villes";
-        this.allVilles = new ArrayList<Ville>();
-        JsonArrayRequest villesRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+    /******************************************** ACTUALITES ********************************************/
+    public void generateActualitesUtilisateur() {
+        if (actualitesUtilisateur == null) {
+            actualitesUtilisateur = new ArrayList<Actualite>();
+            actualiteAdapter = new ActualiteAdapter(this, actualitesUtilisateur);
+            RequestQueue queue = Volley.newRequestQueue(this);
+            queue.add(requestActualites());
+        }
+        else {
+            if (actualiteAdapter.getCount() == 0) {
+                actualiteAdapter.addAll(actualitesUtilisateur);
+                actualiteAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    public ActualiteAdapter getActualiteAdapter() {
+        return actualiteAdapter;
+    }
+
+    public JsonArrayRequest requestActualites() {
+        String url = "http://10.0.2.2:8888/actualites/utilisateur/0";
+        JsonArrayRequest actualitesRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         for (int i = 0; i < response.length(); i++) {
                             try {
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                Ville ville = new Ville(jsonObject.getInt("id"), jsonObject.getString("nom"), jsonObject.getString("code"));
-                                allVilles.add(ville);
+                                JSONObject jsonActualite = response.getJSONObject(i);
+                                Actualite actualite = new Actualite(jsonActualite);
+                                JSONObject jsonInteret = jsonActualite.getJSONObject("interet");
+                                Interet interet = new Interet(jsonInteret);
+                                actualite.setInteret(interet);
+                                actualiteAdapter.add(actualite);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
+                        actualiteAdapter.notifyDataSetChanged();
                     }
                 },
                 new Response.ErrorListener() {
@@ -101,56 +115,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-        return villesRequest;
+        return actualitesRequest;
     }
-
-    public ArrayList<Ville> getAllVilles() {
-        return allVilles;
-    }
-
-    /********************** INTERETS **********************/
-    public JsonArrayRequest requestAllInterets() {
-        String url = "http://10.0.2.2:8888/interets";
-        this.allInterets = new ArrayList<Interet>();
-        JsonArrayRequest interetsRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                Interet interet = new Interet(jsonObject.getInt("id"), jsonObject.getString("nom"));
-                                allInterets.add(interet);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERREUR", error.toString());
-                    }
-                }
-        );
-        return interetsRequest;
-    }
-
-    public ArrayList<Interet> getAllInterets() {
-        return allInterets;
-    }
-
-    /********************** ACTUALITES **********************/
-    public ArrayList<Actualite> getActualites() {
-        return actualites;
-    }
-
-    public void setActualites(ArrayList<Actualite> actualites) {
-        this.actualites = actualites;
-    }
-
-    /********************** COMMERCES **********************/
+    /******************************************** COMMERCES ********************************************/
     public void generateCommercesUtilisateur() {
         if (commercesUtilisateur == null) {
             commercesUtilisateur = new ArrayList<Commerce>();
@@ -179,11 +146,18 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(JSONArray response) {
                         for (int i = 0; i < response.length(); i++) {
                             try {
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                Commerce commerce = new Commerce(jsonObject.getInt("id"), jsonObject.getString("nom"), jsonObject.getString("adresse"));
+                                JSONObject jsonCommerce = response.getJSONObject(i);
+                                Commerce commerce = new Commerce(jsonCommerce);
                                 commerce.abonner();
-                                commerce.setVille(jsonObject.getInt("ville"), allVilles);
-                                commerce.setInteret(jsonObject.getInt("interet"), allInterets);
+
+                                JSONObject jsonInteret = jsonCommerce.getJSONObject("interet");
+                                Interet interet = new Interet(jsonInteret);
+                                JSONObject jsonVille = jsonCommerce.getJSONObject("ville");
+                                Ville ville = new Ville(jsonVille);
+
+                                commerce.setInteret(interet);
+                                commerce.setVille(ville);
+
                                 commerceAdapter.add(commerce);
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -209,43 +183,22 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(JSONArray response) {
                         for (int i = 0; i < response.length(); i++) {
                             try {
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                Commerce commerce = new Commerce(jsonObject.getInt("id"), jsonObject.getString("nom"), jsonObject.getString("adresse"));
-                                commerce.setVille(jsonObject.getInt("ville"), allVilles);
-                                commerce.setInteret(jsonObject.getInt("interet"), allInterets);
+                                JSONObject jsonCommerce = response.getJSONObject(i);
+                                Commerce commerce = new Commerce(jsonCommerce);
+
+                                JSONObject jsonInteret = jsonCommerce.getJSONObject("interet");
+                                Interet interet = new Interet(jsonInteret);
+                                JSONObject jsonVille = jsonCommerce.getJSONObject("ville");
+                                Ville ville = new Ville(jsonVille);
+
+                                commerce.setInteret(interet);
+                                commerce.setVille(ville);
                                 commerceAdapter.add(commerce);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
                         commerceAdapter.notifyDataSetChanged();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERREUR", error.toString());
-                    }
-                }
-        );
-        return commercesRequest;
-    }
-    public JsonArrayRequest requestAllCommerces() {
-        String url = "http://10.0.2.2:8888/commerces";
-        this.allCommerces = new ArrayList<Commerce>();
-        JsonArrayRequest commercesRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                Commerce commerce = new Commerce(jsonObject.getInt("id"), jsonObject.getString("nom"), jsonObject.getString("adresse"));
-                                allCommerces.add(commerce);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -264,19 +217,7 @@ public class MainActivity extends AppCompatActivity {
         JsonObjectRequest abonnerRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            if (response.getBoolean("result")) {
-                                if (!commerceAdapter.contains(commerce)) {
-                                    commerceAdapter.add(commerce);
-                                    commerceAdapter.notifyDataSetChanged();
-                                    refreshOffres();
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    public void onResponse(JSONObject response) {}
                 },
                 new Response.ErrorListener() {
                     @Override
@@ -286,26 +227,16 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
         queue.add(abonnerRequest);
-        queue.add(refreshOffres());
+        queue.add(refreshOffresAbonner(commerce));
     }
     public void requestCommerceDesabonner(final Commerce commerce) {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://10.0.2.2:8888/commerces/utilisateur/0/desabonner/"+commerce.getId();
-        JsonObjectRequest abonnerRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+        boolean refresh = false;
+        JsonObjectRequest desabonnerRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            if (response.getBoolean("result")) {
-                                if (!commerceAdapter.contains(commerce)) {
-                                    commerceAdapter.remove(commerce);
-                                    commerceAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    public void onResponse(JSONObject response) {}
                 },
                 new Response.ErrorListener() {
                     @Override
@@ -314,17 +245,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-        queue.add(abonnerRequest);
-        queue.add(refreshOffres());
+        queue.add(desabonnerRequest);
+        queue.add(refreshOffresDesabonner(commerce));
     }
 
-    /********************** OFFRES **********************/
+    /******************************************** OFFRES ********************************************/
     public void generateOffresUtilisateur() {
         if (offresUtilisateur == null) {
             offresUtilisateur = new ArrayList<Offre>();
             offreAdapter = new OffreAdapter(this, offresUtilisateur);
             RequestQueue queue = Volley.newRequestQueue(this);
-            queue.add(requestAllCommerces());
             queue.add(requestOffres());
         }
         else {
@@ -347,10 +277,13 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(JSONArray response) {
                         for (int i = 0; i < response.length(); i++) {
                             try {
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                Offre offre = new Offre(jsonObject.getString("intitule"), jsonObject.getString("description"), jsonObject.getString("date"), jsonObject.getDouble("prix"));
-                                offre.setCommerce(jsonObject.getInt("commerce"), allCommerces);
-                                Log.d("Offre", offre.getIntitule());
+                                JSONObject jsonOffre = response.getJSONObject(i);
+                                Offre offre = new Offre(jsonOffre);
+
+                                JSONObject jsonCommerce = jsonOffre.getJSONObject("commerce");
+                                Commerce commerce = new Commerce(jsonCommerce);
+
+                                offre.setCommerce(commerce);
                                 offreAdapter.add(offre);
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -368,12 +301,64 @@ public class MainActivity extends AppCompatActivity {
         );
         return offresRequest;
     }
-    public JsonArrayRequest refreshOffres() {
-        offreAdapter.clear();
-        return requestOffres();
+
+    public JsonArrayRequest refreshOffresAbonner(final Commerce commerce) {
+        String url = "http://10.0.2.2:8888/commerces/"+commerce.getId()+"/offres";
+        JsonArrayRequest offresRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        for (int i = 0; i < response.length(); i++) {
+                            try {
+                                JSONObject jsonObject = response.getJSONObject(i);
+                                Offre offre = new Offre(jsonObject.getString("_id"), jsonObject.getString("intitule"), jsonObject.getString("description"), jsonObject.getString("date"), jsonObject.getDouble("prix"));
+                                offre.setCommerce(commerce);
+                                offreAdapter.add(offre);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        offreAdapter.notifyDataSetChanged();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("ERREUR", error.toString());
+                    }
+                }
+        );
+        return offresRequest;
+    }
+    public JsonArrayRequest refreshOffresDesabonner(final Commerce commerce) {
+        String url = "http://10.0.2.2:8888/commerces/"+commerce.getId()+"/offres";
+        JsonArrayRequest offresRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        for (int i = 0; i < response.length(); i++) {
+                            try {
+                                JSONObject jsonObject = response.getJSONObject(i);
+                                Offre offre = new Offre(jsonObject.getString("_id"), jsonObject.getString("intitule"), jsonObject.getString("description"), jsonObject.getString("date"), jsonObject.getDouble("prix"));
+                                offreAdapter.removeOffre(offre);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        offreAdapter.notifyDataSetChanged();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("ERREUR", error.toString());
+                    }
+                }
+        );
+        return offresRequest;
     }
 
-    /********************** GROUPES **********************/
+    /******************************************** GROUPES ********************************************/
     public void generateGroupesUtilisateur() {
         if (groupesUtilisateur == null) {
             groupesUtilisateur = new ArrayList<Groupe>();
@@ -419,11 +404,17 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(JSONArray response) {
                         for (int i = 0; i < response.length(); i++) {
                             try {
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                Groupe groupe = new Groupe(jsonObject.getInt("id"), jsonObject.getString("nom"));
+                                JSONObject jsonnGroupe = response.getJSONObject(i);
+                                Groupe groupe = new Groupe(jsonnGroupe);
                                 groupe.rejoindre();
-                                groupe.setInteret(jsonObject.getInt("interet"),  allInterets);
-                                groupe.setVille(jsonObject.getInt("ville"), allVilles);
+
+                                JSONObject jsonInteret = jsonnGroupe.getJSONObject("interet");
+                                Interet interet = new Interet(jsonInteret);
+                                JSONObject jsonVille = jsonnGroupe.getJSONObject("ville");
+                                Ville ville = new Ville(jsonVille);
+
+                                groupe.setInteret(interet);
+                                groupe.setVille(ville);
                                 groupeUtilisateurAdapter.add(groupe);
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -450,10 +441,16 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(JSONArray response) {
                         for (int i = 0; i < response.length(); i++) {
                             try {
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                Groupe groupe = new Groupe(jsonObject.getInt("id"), jsonObject.getString("nom"));
-                                groupe.setInteret(jsonObject.getInt("interet"),  allInterets);
-                                groupe.setVille(jsonObject.getInt("ville"), allVilles);
+                                JSONObject jsonnGroupe= response.getJSONObject(i);
+                                Groupe groupe = new Groupe(jsonnGroupe);
+
+                                JSONObject jsonInteret = jsonnGroupe.getJSONObject("interet");
+                                Interet interet = new Interet(jsonInteret);
+                                JSONObject jsonVille = jsonnGroupe.getJSONObject("ville");
+                                Ville ville = new Ville(jsonVille);
+
+                                groupe.setInteret(interet);
+                                groupe.setVille(ville);
                                 groupeInteretsAdapter.add(groupe);
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -470,6 +467,63 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
         return interetsRequest;
+    }
+
+    public void requestGroupeRejoindre(final Groupe groupe) {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://10.0.2.2:8888/groupes/utilisateur/0/rejoindre/"+groupe.getId();
+        JsonObjectRequest rejoindreRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                            try {
+                                if (response.getBoolean("result")) {
+                                    groupeUtilisateurAdapter.add(groupe);
+                                    groupeUtilisateurAdapter.notifyDataSetChanged();
+                                    groupeInteretsAdapter.remove(groupe);
+                                    groupeInteretsAdapter.notifyDataSetChanged();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("ERREUR", error.toString());
+                    }
+                }
+        );
+        queue.add(rejoindreRequest);
+    }
+    public void requestGroupeQuitter(final Groupe groupe) {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://10.0.2.2:8888/groupes/utilisateur/0/quitter/"+groupe.getId();
+        JsonObjectRequest quitterRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.getBoolean("result")) {
+                                groupeUtilisateurAdapter.remove(groupe);
+                                groupeUtilisateurAdapter.notifyDataSetChanged();
+                                groupeInteretsAdapter.add(groupe);
+                                groupeInteretsAdapter.notifyDataSetChanged();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("ERREUR", error.toString());
+                    }
+                }
+        );
+        queue.add(quitterRequest);
     }
 
 }

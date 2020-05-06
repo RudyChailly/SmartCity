@@ -1,6 +1,8 @@
 package com.example.smartcity.models.commerce;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,20 +60,35 @@ public class CommerceAdapter  extends ArrayAdapter<Commerce> {
             @Override
             public void onClick(View v) {
                 if (commerce.estAbonne()) {
-                    commerce.desabonner();
-                    Toast.makeText(getContext(), commerce.getNom() + " " + getContext().getResources().getString(R.string.plus_suivi), Toast.LENGTH_SHORT).show();
-                    finalViewHolder.abonne.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                    ((MainActivity)getContext()).requestCommerceDesabonner(commerce);
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                    dialog.setTitle(getContext().getResources().getString(R.string.se_desabonner)+" "+commerce.getNom()+" ?");
+                    dialog.setCancelable(true);
+                    dialog.setPositiveButton(getContext().getResources().getString(R.string.oui), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            commerce.desabonner();
+                            ((MainActivity)getContext()).requestCommerceDesabonner(commerce);
+                            Toast.makeText(getContext(), commerce.getNom() + " " + getContext().getResources().getString(R.string.plus_suivi), Toast.LENGTH_SHORT).show();
+                            finalViewHolder.abonne.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                        }
+                    });
+                    dialog.setNegativeButton(getContext().getResources().getString(R.string.non), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    AlertDialog alert = dialog.create();
+                    alert.show();
                 }
                 else {
                     commerce.abonner();
+                    ((MainActivity)getContext()).requestCommerceAbonner(commerce);
                     Toast.makeText(getContext(), commerce.getNom() + " " + getContext().getResources().getString(R.string.suivi), Toast.LENGTH_SHORT).show();
                     finalViewHolder.abonne.setImageResource(R.drawable.ic_favorite_black_24dp);
-                    ((MainActivity)getContext()).requestCommerceAbonner(commerce);
                 }
             }
             });
-        // TODO: viewHolder.suivi
 
         return convertView;
     }
