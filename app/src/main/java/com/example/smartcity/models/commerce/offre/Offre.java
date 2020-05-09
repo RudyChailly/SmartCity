@@ -9,45 +9,45 @@ import java.util.ArrayList;
 
 public class Offre {
 
-    private String _id, intitule, intituleCourt, description, date;
+    private String intitule, intituleCourt, description, date;
     private double prix;
+    private int idCommerce;
     private Commerce commerce;
 
     public Offre(){}
 
-    public Offre(String _id, String intitule, String description, String date, double prix) {
-        if (intitule.length() > 18) {
-            intituleCourt = intitule.substring(0,17)+"...";
+    public void setIntitule(String intitule) {
+        this.intitule = intitule;
+        if (intitule.length() > 20) {
+            intituleCourt = intitule.substring(0,17);
         }
         else {
             intituleCourt = intitule;
         }
-        this._id = _id;
-        this.intitule = intitule;
+    }
+
+    public void setIntituleCourt(String intituleCourt) {
+        this.intituleCourt = intituleCourt;
+    }
+
+    public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setDate(String date) {
         this.date = date;
+    }
+
+    public void setPrix(double prix) {
         this.prix = prix;
-        this.commerce = null;
     }
 
-    public Offre(JSONObject jsonObject) throws JSONException {
-        if (jsonObject.has("_id")) { this._id = jsonObject.getString("_id"); }
-        if (jsonObject.has("intitule")) {
-            this.intitule = jsonObject.getString("intitule");
-            if (intitule.length() > 18) {
-                intituleCourt = intitule.substring(0,17)+"...";
-            }
-            else {
-                intituleCourt = intitule;
-            }
-        }
-        if (jsonObject.has("description")) { this.description = jsonObject.getString("description"); }
-        if (jsonObject.has("date")) { this.date = jsonObject.getString("date"); }
-        if (jsonObject.has("prix")) { this.prix = jsonObject.getDouble("prix"); }
+    public int getIdCommerce() {
+        return idCommerce;
     }
 
-    public String getId() {
-        return this._id;
+    public void setIdCommerce(int idCommerce) {
+        this.idCommerce = idCommerce;
     }
 
     public Commerce getCommerce() { return commerce; }
@@ -76,16 +76,8 @@ public class Offre {
         this.commerce = commerce;
     }
 
-    public void setCommerce(int idCommerce, ArrayList<Commerce> commerces) {
-        for (Commerce commerce : commerces) {
-            if (commerce.getId() == idCommerce) {
-                this.commerce = commerce;
-            }
-        }
-    }
-
     public boolean equals(Offre offre) {
-        return this.getId().equals(offre.getId());
+        return ((this.getIdCommerce() == offre.getIdCommerce()) && (this.getIntitule().equals(offre.getIntitule())) && (this.getDate().equals(offre.getDate())));
     }
 
 }

@@ -10,31 +10,58 @@ import java.util.ArrayList;
 
 public class Commerce {
 
-    private int id;
+    private Integer id;
     private String nom, adresse;
     private boolean abonne;
+
+    private int idVille;
     private Ville ville;
+
+    private int idInteret;
     private Interet interet;
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public void setAdresse(String adresse) {
+        this.adresse = adresse;
+    }
+
+    public boolean isAbonne() {
+        return abonne;
+    }
+
+    public void setAbonne(boolean abonne) {
+        this.abonne = abonne;
+    }
+
+    public int getIdVille() {
+        return idVille;
+    }
+
+    public void setIdVille(int idVille) {
+        this.idVille = idVille;
+    }
+
+    public int getIdInteret() {
+        return idInteret;
+    }
+
+    public void setIdInteret(int idInteret) {
+        this.idInteret = idInteret;
+    }
+
 
     public Commerce(){
         this.abonne = false;
     }
 
-    public Commerce(int id, String nom, String adresse) {
-        this.id = id;
-        this.nom = nom;
-        this.adresse = adresse;
-        this.abonne = false;
-    }
-
-    public Commerce(JSONObject jsonObject) throws JSONException {
-        if (jsonObject.has("id")) { this.id = jsonObject.getInt("id"); }
-        if (jsonObject.has("nom")) { this.nom = jsonObject.getString("nom"); }
-        if (jsonObject.has("adresse")) { this.adresse = jsonObject.getString("adresse"); }
-        this.abonne = false;
-    }
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

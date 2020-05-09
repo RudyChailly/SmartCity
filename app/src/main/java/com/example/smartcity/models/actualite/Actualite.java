@@ -8,25 +8,31 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class Actualite {
-
-    private String titre, url, date, source;
-    private Interet interet;
-
-    public Actualite(){}
-
-    public Actualite(String titre, String url, String source, String date) {
+    public void setTitre(String titre) {
         this.titre = titre;
+    }
+
+    public void setUrl(String url) {
         this.url = url;
-        this.source = source;
+    }
+
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public Actualite(JSONObject jsonObject) throws JSONException {
-        if (jsonObject.has("titre")) { this.titre = jsonObject.getString("titre"); }
-        if (jsonObject.has("url")) { this.url = jsonObject.getString("url"); }
-        if (jsonObject.has("date")) { this.date = jsonObject.getString("date"); }
-        if (jsonObject.has("source")) { this.source = jsonObject.getString("source"); }
+    public void setSource(String source) {
+        this.source = source;
     }
+
+    public void setIdInteret(int idInteret) {
+        this.idInteret = idInteret;
+    }
+
+    private String titre, url, date, source;
+    private Interet interet;
+    private int idInteret;
+
+    public Actualite(){}
 
     public String getTitre() {
         return titre;
@@ -42,6 +48,10 @@ public class Actualite {
 
     public String getDate() {
         return date;
+    }
+
+    public long getIdInteret() {
+        return  idInteret;
     }
 
     public void setInteret(Interet interet) {

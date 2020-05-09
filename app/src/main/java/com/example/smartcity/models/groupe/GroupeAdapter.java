@@ -39,7 +39,9 @@ public class GroupeAdapter extends ArrayAdapter<Groupe> {
         }
         final Groupe groupe = getItem(position);
         viewHolder.nom.setText(groupe.getNom());
-        viewHolder.interet.setText(groupe.getInteret().toString());
+        if (groupe.getInteret() != null) {
+            viewHolder.interet.setText(groupe.getInteret().toString());
+        }
         if (groupe.estRejoint()) {
             viewHolder.rejoint.setImageResource(R.drawable.ic_clear_black_24dp);
             viewHolder.rejoint.setColorFilter(ContextCompat.getColor(getContext(), R.color.red));

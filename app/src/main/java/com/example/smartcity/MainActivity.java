@@ -10,6 +10,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.smartcity.models.Utilisateur;
 import com.example.smartcity.models.actualite.ActualiteAdapter;
 import com.example.smartcity.models.commerce.CommerceAdapter;
 import com.example.smartcity.models.commerce.offre.OffreAdapter;
@@ -21,7 +22,13 @@ import com.example.smartcity.models.commerce.offre.Offre;
 import com.example.smartcity.models.Ville;
 import com.example.smartcity.models.groupe.GroupeAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -47,7 +54,17 @@ public class MainActivity extends AppCompatActivity {
     private CommerceAdapter commerceAdapter;
     private GroupeAdapter groupeUtilisateurAdapter, groupeInteretsAdapter;
 
+    Utilisateur utilisateur;
 
+    DatabaseReference
+            referenceActualites,
+            referenceInterets,
+            referenceCommerces,
+            referenceOffres,
+            referenceVilles,
+            referenceUtilisateurs,
+            referenceGroupes,
+            referenceMessages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,21 +82,68 @@ public class MainActivity extends AppCompatActivity {
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        setReferences(database);
+
+        actualitesUtilisateur = new ArrayList<Actualite>();
+        actualiteAdapter = new ActualiteAdapter(this, actualitesUtilisateur);
+
+        commercesUtilisateur = new ArrayList<Commerce>();
+        commerceAdapter = new CommerceAdapter(this, commercesUtilisateur);
+
+        offresUtilisateur = new ArrayList<Offre>();
+        offreAdapter = new OffreAdapter(this, offresUtilisateur);
+
+        groupesUtilisateur = new ArrayList<Groupe>();
+        groupeUtilisateurAdapter = new GroupeAdapter(this, groupesUtilisateur);
+
+        groupesInterets = new ArrayList<Groupe>();
+        groupeInteretsAdapter = new GroupeAdapter(this, groupesInterets);
+        //requestUtilisateur();
+
+    }
+
+    /******************************************** UTILISATEURS ********************************************/
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+    }
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+
+    public DatabaseReference getReferenceUtilisateurs() {
+        return referenceUtilisateurs;
     }
 
     /******************************************** ACTUALITES ********************************************/
-    public void generateActualitesUtilisateur() {
-        if (actualitesUtilisateur == null) {
-            actualitesUtilisateur = new ArrayList<Actualite>();
-            actualiteAdapter = new ActualiteAdapter(this, actualitesUtilisateur);
-            RequestQueue queue = Volley.newRequestQueue(this);
-            queue.add(requestActualites());
-        }
-        else {
-            if (actualiteAdapter.getCount() == 0) {
-                actualiteAdapter.addAll(actualitesUtilisateur);
-                actualiteAdapter.notifyDataSetChanged();
-            }
+    public void requestActualitesUtilisateur() {
+        if (actualiteAdapter.getCount() == 0) {
+            referenceActualites.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        final Actualite actualite = snapshot.getValue(Actualite.class);
+                        if (utilisateur.estInteresse(actualite)) {
+                            referenceInterets.child(actualite.getIdInteret() + "").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Interet interet = dataSnapshot.getValue(Interet.class);
+                                    if (interet != null) {
+                                        actualite.setInteret(interet);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
+                            });
+                            actualiteAdapter.add(actualite);
+                            actualiteAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {}
+            });
         }
     }
 
@@ -87,50 +151,51 @@ public class MainActivity extends AppCompatActivity {
         return actualiteAdapter;
     }
 
-    public JsonArrayRequest requestActualites() {
-        String url = "http://10.0.2.2:8888/actualites/utilisateur/0";
-        JsonArrayRequest actualitesRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject jsonActualite = response.getJSONObject(i);
-                                Actualite actualite = new Actualite(jsonActualite);
-                                JSONObject jsonInteret = jsonActualite.getJSONObject("interet");
-                                Interet interet = new Interet(jsonInteret);
-                                actualite.setInteret(interet);
-                                actualiteAdapter.add(actualite);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+    /******************************************** COMMERCES ********************************************/
+    public void requestCommercesUtilisateur() {
+        if (commerceAdapter.getCount() == 0) {
+            referenceCommerces.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        final Commerce commerce = snapshot.getValue(Commerce.class);
+                        if (utilisateur.estInteresse(commerce) || (utilisateur.getIdCommerces() != null && utilisateur.estAbonne(Integer.parseInt(snapshot.getKey())))) {
+                            commerce.setId(Integer.parseInt(snapshot.getKey()));
+                            referenceInterets.child(commerce.getIdInteret() + "").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Interet interet = dataSnapshot.getValue(Interet.class);
+                                    if (interet != null) {
+                                        commerce.setInteret(interet);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
+                            });
+                            referenceVilles.child(commerce.getIdVille() + "").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Ville ville = dataSnapshot.getValue(Ville.class);
+                                    if (ville != null) {
+                                        commerce.setVille(ville);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
+                            });
+                            if (utilisateur.estAbonne(Integer.parseInt(snapshot.getKey()))) {
+                                commerce.abonner();
                             }
+                            commerceAdapter.add(commerce);
+                            commerceAdapter.notifyDataSetChanged();
                         }
-                        actualiteAdapter.notifyDataSetChanged();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERREUR", error.toString());
                     }
                 }
-        );
-        return actualitesRequest;
-    }
-    /******************************************** COMMERCES ********************************************/
-    public void generateCommercesUtilisateur() {
-        if (commercesUtilisateur == null) {
-            commercesUtilisateur = new ArrayList<Commerce>();
-            commerceAdapter = new CommerceAdapter(this, commercesUtilisateur);
-            RequestQueue queue = Volley.newRequestQueue(this);
-            queue.add(requestCommercesSuivis());
-            queue.add(requestCommercesInterets());
-        }
-        else {
-            if (commerceAdapter.getCount() == 0) {
-                commerceAdapter.addAll(commercesUtilisateur);
-                commerceAdapter.notifyDataSetChanged();
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {}
+            });
         }
     }
 
@@ -138,253 +203,188 @@ public class MainActivity extends AppCompatActivity {
         return commerceAdapter;
     }
 
-    public JsonArrayRequest requestCommercesSuivis() {
-        String url = "http://10.0.2.2:8888/commerces/utilisateur/0";
-        JsonArrayRequest commercesRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject jsonCommerce = response.getJSONObject(i);
-                                Commerce commerce = new Commerce(jsonCommerce);
-                                commerce.abonner();
-
-                                JSONObject jsonInteret = jsonCommerce.getJSONObject("interet");
-                                Interet interet = new Interet(jsonInteret);
-                                JSONObject jsonVille = jsonCommerce.getJSONObject("ville");
-                                Ville ville = new Ville(jsonVille);
-
-                                commerce.setInteret(interet);
-                                commerce.setVille(ville);
-
-                                commerceAdapter.add(commerce);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        commerceAdapter.notifyDataSetChanged();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERREUR", error.toString());
-                    }
-                }
-        );
-        return commercesRequest;
-    }
-    public JsonArrayRequest requestCommercesInterets() {
-        String url = "http://10.0.2.2:8888/commerces/utilisateur/0/interets";
-        JsonArrayRequest commercesRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject jsonCommerce = response.getJSONObject(i);
-                                Commerce commerce = new Commerce(jsonCommerce);
-
-                                JSONObject jsonInteret = jsonCommerce.getJSONObject("interet");
-                                Interet interet = new Interet(jsonInteret);
-                                JSONObject jsonVille = jsonCommerce.getJSONObject("ville");
-                                Ville ville = new Ville(jsonVille);
-
-                                commerce.setInteret(interet);
-                                commerce.setVille(ville);
-                                commerceAdapter.add(commerce);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        commerceAdapter.notifyDataSetChanged();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERREUR", error.toString());
-                    }
-                }
-        );
-        return commercesRequest;
-    }
-
     public void requestCommerceAbonner(final Commerce commerce) {
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://10.0.2.2:8888/commerces/utilisateur/0/abonner/"+commerce.getId();
-        JsonObjectRequest abonnerRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {}
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERREUR", error.toString());
-                    }
-                }
-        );
-        queue.add(abonnerRequest);
-        queue.add(refreshOffresAbonner(commerce));
+        utilisateur.getIdCommerces().add(commerce.getId());
+        referenceUtilisateurs.child(utilisateur.getId()+"").child("idCommerces").setValue(utilisateur.getIdCommerces());
+        refreshOffresAbonner(commerce);
     }
     public void requestCommerceDesabonner(final Commerce commerce) {
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://10.0.2.2:8888/commerces/utilisateur/0/desabonner/"+commerce.getId();
-        boolean refresh = false;
-        JsonObjectRequest desabonnerRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {}
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERREUR", error.toString());
-                    }
-                }
-        );
-        queue.add(desabonnerRequest);
-        queue.add(refreshOffresDesabonner(commerce));
+        utilisateur.getIdCommerces().remove(commerce.getId());
+        referenceUtilisateurs.child(utilisateur.getId()+"").child("idCommerces").setValue(utilisateur.getIdCommerces());
+        refreshOffresDesabonner(commerce);
     }
 
     /******************************************** OFFRES ********************************************/
-    public void generateOffresUtilisateur() {
-        if (offresUtilisateur == null) {
-            offresUtilisateur = new ArrayList<Offre>();
-            offreAdapter = new OffreAdapter(this, offresUtilisateur);
-            RequestQueue queue = Volley.newRequestQueue(this);
-            queue.add(requestOffres());
+    public void requestOffresUtilisateur() {
+        if (offreAdapter.getCount() == 0) {
+             referenceOffres.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        final Offre offre = snapshot.getValue(Offre.class);
+                        if (utilisateur.estAbonne(offre.getIdCommerce())) {
+                            referenceCommerces.child(offre.getIdCommerce() + "").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Commerce commerce = dataSnapshot.getValue(Commerce.class);
+                                    if (commerce != null) {
+                                        offre.setCommerce(commerce);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
+                            });
+                            offreAdapter.add(offre);
+                            offreAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {}
+            });
         }
-        else {
-            if (offreAdapter.getCount() == 0) {
-                offreAdapter.addAll(offresUtilisateur);
-                offreAdapter.notifyDataSetChanged();
+    }
+    public void refreshOffresAbonner(final Commerce commerce) {
+        referenceOffres.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    final Offre offre = snapshot.getValue(Offre.class);
+                    if (offre.getIdCommerce() == commerce.getId()) {
+                        offre.setCommerce(commerce);
+                        offreAdapter.add(offre);
+                        offreAdapter.notifyDataSetChanged();
+                    }
+                }
             }
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+    }
+    public void refreshOffresDesabonner(final Commerce commerce) {
+        referenceOffres.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    final Offre offre = snapshot.getValue(Offre.class);
+                    if (offre.getIdCommerce() == commerce.getId()) {
+                        offre.setCommerce(commerce);
+                        offreAdapter.removeOffre(offre);
+                        offreAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
     }
 
     public OffreAdapter getOffreAdapter() {
         return offreAdapter;
     }
 
-    public JsonArrayRequest requestOffres() {
-        String url = "http://10.0.2.2:8888/offres/utilisateur/0";
-        JsonArrayRequest offresRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject jsonOffre = response.getJSONObject(i);
-                                Offre offre = new Offre(jsonOffre);
-
-                                JSONObject jsonCommerce = jsonOffre.getJSONObject("commerce");
-                                Commerce commerce = new Commerce(jsonCommerce);
-
-                                offre.setCommerce(commerce);
-                                offreAdapter.add(offre);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        offreAdapter.notifyDataSetChanged();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERREUR", error.toString());
-                    }
-                }
-        );
-        return offresRequest;
-    }
-
-    public JsonArrayRequest refreshOffresAbonner(final Commerce commerce) {
-        String url = "http://10.0.2.2:8888/commerces/"+commerce.getId()+"/offres";
-        JsonArrayRequest offresRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                Offre offre = new Offre(jsonObject.getString("_id"), jsonObject.getString("intitule"), jsonObject.getString("description"), jsonObject.getString("date"), jsonObject.getDouble("prix"));
-                                offre.setCommerce(commerce);
-                                offreAdapter.add(offre);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        offreAdapter.notifyDataSetChanged();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERREUR", error.toString());
-                    }
-                }
-        );
-        return offresRequest;
-    }
-    public JsonArrayRequest refreshOffresDesabonner(final Commerce commerce) {
-        String url = "http://10.0.2.2:8888/commerces/"+commerce.getId()+"/offres";
-        JsonArrayRequest offresRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                Offre offre = new Offre(jsonObject.getString("_id"), jsonObject.getString("intitule"), jsonObject.getString("description"), jsonObject.getString("date"), jsonObject.getDouble("prix"));
-                                offreAdapter.removeOffre(offre);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        offreAdapter.notifyDataSetChanged();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERREUR", error.toString());
-                    }
-                }
-        );
-        return offresRequest;
-    }
-
     /******************************************** GROUPES ********************************************/
-    public void generateGroupesUtilisateur() {
-        if (groupesUtilisateur == null) {
-            groupesUtilisateur = new ArrayList<Groupe>();
-            groupeUtilisateurAdapter = new GroupeAdapter(this, groupesUtilisateur);
-            RequestQueue queue = Volley.newRequestQueue(this);
-            queue.add(requestGroupesUtilisateur());
-        }
-        else {
-            if (groupeUtilisateurAdapter.getCount() == 0) {
-                groupeUtilisateurAdapter.addAll(groupesUtilisateur);
-                groupeUtilisateurAdapter.notifyDataSetChanged();
-            }
+    public void requestGroupesUtilisateur() {
+        if (groupeUtilisateurAdapter.getCount() == 0) {
+            referenceGroupes.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        final Groupe groupe = snapshot.getValue(Groupe.class);
+                        groupe.setId(Integer.parseInt(snapshot.getKey()));
+                        if (utilisateur.aRejoint(groupe.getId())) {
+                            referenceInterets.child(groupe.getIdInteret() + "").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Interet interet = dataSnapshot.getValue(Interet.class);
+                                    if (interet != null) {
+                                        groupe.setInteret(interet);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
+                            });
+                            referenceVilles.child(groupe.getIdVille() + "").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Ville ville = dataSnapshot.getValue(Ville.class);
+                                    if (ville != null) {
+                                        groupe.setVille(ville);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
+                            });
+                            groupe.rejoindre();
+                            groupeUtilisateurAdapter.add(groupe);
+                            groupeUtilisateurAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {}
+            });
         }
     }
-    public void generateGroupesInterets() {
-        if (groupesInterets == null) {
-            groupesInterets = new ArrayList<Groupe>();
-            groupeInteretsAdapter = new GroupeAdapter(this, groupesInterets);
-            RequestQueue queue = Volley.newRequestQueue(this);
-            queue.add(requestGroupesInteret());
+    public void requestGroupesInteret() {
+        if (groupeInteretsAdapter.getCount() == 0) {
+            referenceGroupes.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        final Groupe groupe = snapshot.getValue(Groupe.class);
+                        groupe.setId(Integer.parseInt(snapshot.getKey()));
+                        if (utilisateur.estInteresse(groupe) && !(utilisateur.aRejoint(groupe.getId()))) {
+                            referenceInterets.child(groupe.getIdInteret() + "").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Interet interet = dataSnapshot.getValue(Interet.class);
+                                    if (interet != null) {
+                                        groupe.setInteret(interet);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
+                            });
+                            referenceVilles.child(groupe.getIdVille() + "").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Ville ville = dataSnapshot.getValue(Ville.class);
+                                    if (ville != null) {
+                                        groupe.setVille(ville);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
+                            });
+                            groupeInteretsAdapter.add(groupe);
+                            groupeInteretsAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {}
+            });
         }
-        else {
-            if (groupeInteretsAdapter.getCount() == 0) {
-                groupeInteretsAdapter.addAll(groupesInterets);
-                groupeInteretsAdapter.notifyDataSetChanged();
-            }
+    }
+
+    public void requestGroupeRejoindre(final Groupe groupe) {
+        utilisateur.getIdGroupes().add(groupe.getId());
+        referenceUtilisateurs.child(utilisateur.getId()+"").child("idGroupes").setValue(utilisateur.getIdGroupes());
+        groupeInteretsAdapter.remove(groupe);
+        groupeUtilisateurAdapter.add(groupe);
+    }
+    public void requestGroupeQuitter(final Groupe groupe) {
+        utilisateur.getIdGroupes().remove(groupe.getId());
+        referenceUtilisateurs.child(utilisateur.getId()+"").child("idGroupes").setValue(utilisateur.getIdGroupes());
+        groupeUtilisateurAdapter.remove(groupe);
+        if (utilisateur.estInteresse(groupe)) {
+            groupeInteretsAdapter.add(groupe);
         }
     }
 
@@ -395,135 +395,16 @@ public class MainActivity extends AppCompatActivity {
         return groupeInteretsAdapter;
     }
 
-    public JsonArrayRequest requestGroupesUtilisateur() {
-        String url = "http://10.0.2.2:8888/groupes/utilisateur/0";
-        this.groupesUtilisateur = new ArrayList<Groupe>();
-        JsonArrayRequest interetsRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject jsonnGroupe = response.getJSONObject(i);
-                                Groupe groupe = new Groupe(jsonnGroupe);
-                                groupe.rejoindre();
-
-                                JSONObject jsonInteret = jsonnGroupe.getJSONObject("interet");
-                                Interet interet = new Interet(jsonInteret);
-                                JSONObject jsonVille = jsonnGroupe.getJSONObject("ville");
-                                Ville ville = new Ville(jsonVille);
-
-                                groupe.setInteret(interet);
-                                groupe.setVille(ville);
-                                groupeUtilisateurAdapter.add(groupe);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        groupeUtilisateurAdapter.notifyDataSetChanged();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERREUR", error.toString());
-                    }
-                }
-        );
-        return interetsRequest;
-    }
-    public JsonArrayRequest requestGroupesInteret() {
-        String url = "http://10.0.2.2:8888/groupes/utilisateur/0/interets";
-        this.groupesInterets = new ArrayList<Groupe>();
-        JsonArrayRequest interetsRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject jsonnGroupe= response.getJSONObject(i);
-                                Groupe groupe = new Groupe(jsonnGroupe);
-
-                                JSONObject jsonInteret = jsonnGroupe.getJSONObject("interet");
-                                Interet interet = new Interet(jsonInteret);
-                                JSONObject jsonVille = jsonnGroupe.getJSONObject("ville");
-                                Ville ville = new Ville(jsonVille);
-
-                                groupe.setInteret(interet);
-                                groupe.setVille(ville);
-                                groupeInteretsAdapter.add(groupe);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        groupeInteretsAdapter.notifyDataSetChanged();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERREUR", error.toString());
-                    }
-                }
-        );
-        return interetsRequest;
+    public void setReferences(FirebaseDatabase database) {
+        referenceActualites = database.getReference("Actualites");
+        referenceCommerces = database.getReference("Commerces");
+        referenceGroupes = database.getReference("Groupes");
+        referenceInterets = database.getReference("Interets");
+        referenceMessages = database.getReference("Messages");
+        referenceOffres = database.getReference("Offres");
+        referenceUtilisateurs = database.getReference("Utilisateurs");
+        referenceVilles = database.getReference("Villes");
     }
 
-    public void requestGroupeRejoindre(final Groupe groupe) {
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://10.0.2.2:8888/groupes/utilisateur/0/rejoindre/"+groupe.getId();
-        JsonObjectRequest rejoindreRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                            try {
-                                if (response.getBoolean("result")) {
-                                    groupeUtilisateurAdapter.add(groupe);
-                                    groupeUtilisateurAdapter.notifyDataSetChanged();
-                                    groupeInteretsAdapter.remove(groupe);
-                                    groupeInteretsAdapter.notifyDataSetChanged();
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERREUR", error.toString());
-                    }
-                }
-        );
-        queue.add(rejoindreRequest);
-    }
-    public void requestGroupeQuitter(final Groupe groupe) {
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://10.0.2.2:8888/groupes/utilisateur/0/quitter/"+groupe.getId();
-        JsonObjectRequest quitterRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            if (response.getBoolean("result")) {
-                                groupeUtilisateurAdapter.remove(groupe);
-                                groupeUtilisateurAdapter.notifyDataSetChanged();
-                                groupeInteretsAdapter.add(groupe);
-                                groupeInteretsAdapter.notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERREUR", error.toString());
-                    }
-                }
-        );
-        queue.add(quitterRequest);
-    }
 
 }

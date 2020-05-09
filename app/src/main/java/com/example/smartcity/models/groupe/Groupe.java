@@ -10,28 +10,53 @@ import java.util.ArrayList;
 
 public class Groupe {
 
-    private int id;
+    private Integer id;
     private String nom;
     private boolean rejoint;
 
+    private Integer idVille;
     private Ville ville;
+
+    private Integer idInteret;
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public boolean isRejoint() {
+        return rejoint;
+    }
+
+    public void setRejoint(boolean rejoint) {
+        this.rejoint = rejoint;
+    }
+
+    public Integer getIdVille() {
+        return idVille;
+    }
+
+    public void setIdVille(Integer idVille) {
+        this.idVille = idVille;
+    }
+
+    public Integer getIdInteret() {
+        return idInteret;
+    }
+
+    public void setIdInteret(Integer idInteret) {
+        this.idInteret = idInteret;
+    }
+
     private Interet interet;
 
     public Groupe() {}
 
-    public Groupe(int id, String nom) {
-        this.id = id;
-        this.nom = nom;
-        rejoint = false;
-    }
 
-    public Groupe(JSONObject jsonObject) throws JSONException {
-        if (jsonObject.has("id")) { this.id = jsonObject.getInt("id"); }
-        if (jsonObject.has("nom")) { this.nom = jsonObject.getString("nom"); }
-        this.rejoint = false;
-    }
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

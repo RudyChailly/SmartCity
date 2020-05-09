@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
@@ -17,10 +18,14 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
+import com.example.smartcity.models.Utilisateur;
 import com.example.smartcity.models.actualite.Actualite;
 import com.example.smartcity.models.actualite.ActualiteAdapter;
 import com.example.smartcity.ui.commerces.CommercesFragment;
 import com.example.smartcity.ui.commerces.liste.CommercesListeFragment;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,7 +52,25 @@ public class ActualitesNewsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_actualites_news, container, false);
         listView_actualites = view.findViewById(R.id.liste_actualites);
-        ((MainActivity)getActivity()).generateActualitesUtilisateur();
+        if (((MainActivity)getActivity()).getUtilisateur() == null) {
+            ((MainActivity)getActivity()).getReferenceUtilisateurs().addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Utilisateur utilisateur = dataSnapshot.child("0").getValue(Utilisateur.class);
+                    ((MainActivity)getActivity()).setUtilisateur(utilisateur);
+                    ((MainActivity)getActivity()).getUtilisateur().setId(Integer.parseInt(dataSnapshot.child("0").getKey()));
+                    ((MainActivity)getActivity()).getUtilisateur().checkArrayList();
+                    ((MainActivity)getActivity()).requestActualitesUtilisateur();
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        else {
+            ((MainActivity)getActivity()).requestActualitesUtilisateur();
+        }
         listView_actualites.setAdapter(((MainActivity)getActivity()).getActualiteAdapter());
         return view;
     }

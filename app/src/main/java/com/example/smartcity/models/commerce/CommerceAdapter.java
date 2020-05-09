@@ -47,8 +47,12 @@ public class CommerceAdapter  extends ArrayAdapter<Commerce> {
         }
         final Commerce commerce = getItem(position);
         viewHolder.nom.setText(commerce.getNom());
-        viewHolder.interet.setText(commerce.getInteret().toString());
-        viewHolder.ville.setText(commerce.getVille().toString());
+        if (commerce.getInteret() != null) {
+            viewHolder.interet.setText(commerce.getInteret().toString());
+        }
+        if (commerce.getVille() != null) {
+            viewHolder.ville.setText(commerce.getVille().toString());
+        }
         if (commerce.estAbonne()) {
             viewHolder.abonne.setImageResource(R.drawable.ic_favorite_black_24dp);
         }

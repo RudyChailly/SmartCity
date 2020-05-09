@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textSize="18dp"
-            android:text="Interet"
+            android:text=""
             android:textColor="@color/blue"
             android:visibility="visible"
             android:gravity="end|center_vertical"/>
