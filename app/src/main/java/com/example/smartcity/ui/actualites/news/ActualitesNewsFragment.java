@@ -10,12 +10,6 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
 import com.example.smartcity.models.Utilisateur;
@@ -23,14 +17,10 @@ import com.example.smartcity.models.actualite.Actualite;
 import com.example.smartcity.models.actualite.ActualiteAdapter;
 import com.example.smartcity.ui.commerces.CommercesFragment;
 import com.example.smartcity.ui.commerces.liste.CommercesListeFragment;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 public class ActualitesNewsFragment extends Fragment {
@@ -53,19 +43,15 @@ public class ActualitesNewsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_actualites_news, container, false);
         listView_actualites = view.findViewById(R.id.liste_actualites);
         if (((MainActivity)getActivity()).getUtilisateur() == null) {
-            ((MainActivity)getActivity()).getReferenceUtilisateurs().addListenerForSingleValueEvent(new ValueEventListener() {
+            ((MainActivity)getActivity()).getReferenceUtilisateurs().child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Utilisateur utilisateur = dataSnapshot.child("0").getValue(Utilisateur.class);
-                    ((MainActivity)getActivity()).setUtilisateur(utilisateur);
-                    ((MainActivity)getActivity()).getUtilisateur().setId(Integer.parseInt(dataSnapshot.child("0").getKey()));
-                    ((MainActivity)getActivity()).getUtilisateur().checkArrayList();
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    ((MainActivity)getActivity()).setUtilisateur(dataSnapshot.getValue(Utilisateur.class));
                     ((MainActivity)getActivity()).requestActualitesUtilisateur();
                 }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                }
+                @Override
+                public void onCancelled(DatabaseError error) {}
             });
         }
         else {

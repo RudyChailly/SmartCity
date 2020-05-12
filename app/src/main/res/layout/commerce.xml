@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="24dp"
-            android:text="Nom"
+            android:text=""
             android:textColor="#000"
             android:textStyle="bold"
             />
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16dp"
-            android:text="Ville"
+            android:text=""
             android:textColor="#313131"
             />
 
@@ -57,7 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16dp"
-            android:text="Interet"
+            android:text=""
             android:textColor="@color/blue"
             />
 

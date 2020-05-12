@@ -14,13 +14,16 @@ import java.util.ArrayList;
 
 public class Utilisateur {
 
-    private int id;
-    private String nom, prenom, email, password;
+    private String id, nom, prenom, email;
     private int idVille;
     private ArrayList<Integer> idCommerces;
     private ArrayList<Integer> idInterets;
     private ArrayList<Integer> idGroupes;
-    public Utilisateur() {}
+    public Utilisateur() {
+        idCommerces = new ArrayList<>();
+        idInterets = new ArrayList<>();
+        idGroupes = new ArrayList<>();
+    }
 
     public void setIdInterets(ArrayList<Integer> idInterets) {
         this.idInterets = idInterets;
@@ -30,7 +33,7 @@ public class Utilisateur {
         this.idGroupes = idGroupes;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -42,10 +45,6 @@ public class Utilisateur {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public int getIdVille() {
         return idVille;
     }
@@ -54,12 +53,11 @@ public class Utilisateur {
         return idGroupes;
     }
 
-    public Utilisateur(int id, String nom, String prenom, String email, String password, int idVille, ArrayList<Integer>  idCommerces, ArrayList<Integer>  idInterets, ArrayList<Integer>  idGroupes) {
+    public Utilisateur(String id, String nom, String prenom, String email, int idVille, ArrayList<Integer>  idCommerces, ArrayList<Integer>  idInterets, ArrayList<Integer>  idGroupes) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
-        this.password = password;
         this.idVille = idVille;
         this.idCommerces = idCommerces;
         this.idInterets = idInterets;
@@ -71,7 +69,7 @@ public class Utilisateur {
         return nom;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -85,10 +83,6 @@ public class Utilisateur {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void setIdVille(int idVille) {
@@ -105,29 +99,6 @@ public class Utilisateur {
 
     public ArrayList<Integer>  getIdInterets() {
         return idInterets;
-    }
-
-    public void checkArrayList() {
-        if (this.idCommerces == null) {
-            this.idCommerces = new ArrayList<Integer>();
-        }
-        else {
-            this.idCommerces = idCommerces;
-        }
-
-        if (idInterets == null) {
-            this.idInterets = new ArrayList<Integer>();
-        }
-        else {
-            this.idInterets = idInterets;
-        }
-
-        if (idGroupes == null) {
-            this.idGroupes = new ArrayList<Integer>();
-        }
-        else {
-            this.idGroupes = idGroupes;
-        }
     }
 
     public boolean estInteresse(Actualite actualite) {

@@ -1,15 +1,9 @@
 package com.example.smartcity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.smartcity.models.Utilisateur;
 import com.example.smartcity.models.actualite.ActualiteAdapter;
 import com.example.smartcity.models.commerce.CommerceAdapter;
@@ -21,7 +15,10 @@ import com.example.smartcity.models.commerce.Commerce;
 import com.example.smartcity.models.commerce.offre.Offre;
 import com.example.smartcity.models.Ville;
 import com.example.smartcity.models.groupe.GroupeAdapter;
+import com.example.smartcity.ui.connexion.Demarrage;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,10 +31,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -54,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private CommerceAdapter commerceAdapter;
     private GroupeAdapter groupeUtilisateurAdapter, groupeInteretsAdapter;
 
-    Utilisateur utilisateur;
+    private Utilisateur utilisateur;
 
     DatabaseReference
             referenceActualites,
@@ -70,37 +63,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications).build();
-
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         setReferences(database);
 
-        actualitesUtilisateur = new ArrayList<Actualite>();
-        actualiteAdapter = new ActualiteAdapter(this, actualitesUtilisateur);
-
-        commercesUtilisateur = new ArrayList<Commerce>();
-        commerceAdapter = new CommerceAdapter(this, commercesUtilisateur);
-
-        offresUtilisateur = new ArrayList<Offre>();
-        offreAdapter = new OffreAdapter(this, offresUtilisateur);
-
-        groupesUtilisateur = new ArrayList<Groupe>();
-        groupeUtilisateurAdapter = new GroupeAdapter(this, groupesUtilisateur);
-
-        groupesInterets = new ArrayList<Groupe>();
-        groupeInteretsAdapter = new GroupeAdapter(this, groupesInterets);
-        //requestUtilisateur();
-
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null) {
+            requestUtilisateur(firebaseUser);
+            setAdapters();
+            BottomNavigationView navView = findViewById(R.id.nav_view);
+            AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications).build();
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+            NavigationUI.setupWithNavController(navView, navController);
+        }
+        else {
+            Intent intent = new Intent(MainActivity.this, Demarrage.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     /******************************************** UTILISATEURS ********************************************/
@@ -113,6 +92,17 @@ public class MainActivity extends AppCompatActivity {
 
     public DatabaseReference getReferenceUtilisateurs() {
         return referenceUtilisateurs;
+    }
+    public void requestUtilisateur(FirebaseUser firebaseUser) {
+        referenceUtilisateurs.child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                utilisateur = dataSnapshot.getValue(Utilisateur.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {}
+        });
     }
 
     /******************************************** ACTUALITES ********************************************/
@@ -406,5 +396,21 @@ public class MainActivity extends AppCompatActivity {
         referenceVilles = database.getReference("Villes");
     }
 
+    public void setAdapters() {
+        actualitesUtilisateur = new ArrayList<Actualite>();
+        actualiteAdapter = new ActualiteAdapter(this, actualitesUtilisateur);
+
+        commercesUtilisateur = new ArrayList<Commerce>();
+        commerceAdapter = new CommerceAdapter(this, commercesUtilisateur);
+
+        offresUtilisateur = new ArrayList<Offre>();
+        offreAdapter = new OffreAdapter(this, offresUtilisateur);
+
+        groupesUtilisateur = new ArrayList<Groupe>();
+        groupeUtilisateurAdapter = new GroupeAdapter(this, groupesUtilisateur);
+
+        groupesInterets = new ArrayList<Groupe>();
+        groupeInteretsAdapter = new GroupeAdapter(this, groupesInterets);
+    }
 
 }

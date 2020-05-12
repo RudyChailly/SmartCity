@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SmartCity</string>
+    <string name="app_name" translatable="false">Smart City</string>
     <string name="actualites">News</string>
     <string name="commerces">Shops</string>
     <string name="chat">Chat</string>
@@ -13,7 +13,6 @@
     <string name="rechercher">search</string>
     <string name="filtrer">filter</string>
     <string name="suivi">followed</string>
-    <string name="plus_suivi">unfollowed</string>
     <string name="se_desabonner">Unfollow</string>
     <string name="oui">Yes</string>
     <string name="non">No</string>
@@ -21,4 +20,21 @@
     <string name="rejoint">joined</string>
     <string name="quitté">left</string>
     <string name="rejoindre">Join</string>
+    <string name="inscription">"sign up "</string>
+    <string name="connexion">sign in</string>
+    <string name="nom">Last Name</string>
+    <string name="prenom">First Name</string>
+    <string name="email">Mail address</string>
+    <string name="plus_suivi">unfollowed</string>
+    <string name="mot_de_passe">Password</string>
+    <string name="confirmer_mot_de_passe">Confirm password</string>
+    <string name="valider">validate</string>
+    <string name="nom_requis">Please entrer a Last Name.</string>
+    <string name="prenom_requis">Please enter a First Name.</string>
+    <string name="email_requis">Please enter a mail address.</string>
+    <string name="mot_de_passe_requis">Please enter a password.</string>
+    <string name="mot_de_passe_trop_court">Password must be at least 8 characters.</string>
+    <string name="mot_de_passe_pas_identiques">Please entrer the same password.</string>
+    <string name="compte_existant">An account with this mail address already exists.</string>
+    <string name="connexion_echec">Incorrect mail address or password.</string>
 </resources>
