@@ -1,11 +1,6 @@
 package com.example.smartcity.models.actualite;
 
-import com.example.smartcity.models.Interet;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
+import com.example.smartcity.models.Interet.Interet;
 
 public class Actualite {
     public void setTitre(String titre) {

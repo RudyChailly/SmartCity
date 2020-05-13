@@ -1,14 +1,8 @@
 package com.example.smartcity.models;
 
-import android.util.Log;
-
-import com.example.smartcity.models.Interet;
 import com.example.smartcity.models.actualite.Actualite;
 import com.example.smartcity.models.commerce.Commerce;
-import com.example.smartcity.models.Ville;
 import com.example.smartcity.models.groupe.Groupe;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 

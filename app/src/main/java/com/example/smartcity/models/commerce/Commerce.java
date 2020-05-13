@@ -1,12 +1,7 @@
 package com.example.smartcity.models.commerce;
 
-import com.example.smartcity.models.Interet;
+import com.example.smartcity.models.Interet.Interet;
 import com.example.smartcity.models.Ville;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 public class Commerce {
 

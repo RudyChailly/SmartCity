@@ -35,4 +35,7 @@
     <string name="mot_de_passe_pas_identiques">Merci d\'entrer des mots de passes identiques.</string>
     <string name="compte_existant">Cette adresse mail est déjà associée à un compte.</string>
     <string name="connexion_echec">" Adresse mail ou mot de passe incorrect."</string>
+    <string name="centres_interet">centres d\'interêt</string>
+    <string name="choix_centres_interet_message">Sélectionnez vos centres d\'intrerêt pour une expérience personnalisée.</string>
+    <string name="choix_centres_interet_erreur">Merci de sélectionner au moins 1 centre d\'interêt.</string>
 </resources>

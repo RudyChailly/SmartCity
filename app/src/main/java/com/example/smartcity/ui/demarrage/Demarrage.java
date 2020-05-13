@@ -1,4 +1,4 @@
-package com.example.smartcity.ui.connexion;
+package com.example.smartcity.ui.demarrage;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -8,8 +8,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
 
 import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;

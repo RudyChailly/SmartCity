@@ -1,4 +1,4 @@
-package com.example.smartcity.ui.connexion;
+package com.example.smartcity.ui.demarrage;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -20,11 +20,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
 
 public class ConnexionFragment extends Fragment {
 

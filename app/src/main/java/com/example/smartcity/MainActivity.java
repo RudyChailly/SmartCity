@@ -9,13 +9,14 @@ import com.example.smartcity.models.actualite.ActualiteAdapter;
 import com.example.smartcity.models.commerce.CommerceAdapter;
 import com.example.smartcity.models.commerce.offre.OffreAdapter;
 import com.example.smartcity.models.groupe.Groupe;
-import com.example.smartcity.models.Interet;
+import com.example.smartcity.models.Interet.Interet;
 import com.example.smartcity.models.actualite.Actualite;
 import com.example.smartcity.models.commerce.Commerce;
 import com.example.smartcity.models.commerce.offre.Offre;
 import com.example.smartcity.models.Ville;
 import com.example.smartcity.models.groupe.GroupeAdapter;
-import com.example.smartcity.ui.connexion.Demarrage;
+import com.example.smartcity.ui.demarrage.Demarrage;
+import com.example.smartcity.ui.demarrage.Interets;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -67,13 +68,12 @@ public class MainActivity extends AppCompatActivity {
         setReferences(database);
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        setAdapters();
+
+        // Verifie que l'utilisateur est connecte
         if (firebaseUser != null) {
+            // Verifie que l'utilisateur a au moins un centre d'interet
             requestUtilisateur(firebaseUser);
-            setAdapters();
-            BottomNavigationView navView = findViewById(R.id.nav_view);
-            AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications).build();
-            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-            NavigationUI.setupWithNavController(navView, navController);
         }
         else {
             Intent intent = new Intent(MainActivity.this, Demarrage.class);
@@ -98,6 +98,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 utilisateur = dataSnapshot.getValue(Utilisateur.class);
+                if (utilisateur.getIdInterets().size() == 0) {
+                    finish();
+                    Intent intent = new Intent(MainActivity.this, Interets.class);
+                    startActivity(intent);
+                }
+                else {
+                    BottomNavigationView navView = findViewById(R.id.nav_view);
+                    AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications).build();
+                    NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment);
+                    NavigationUI.setupWithNavController(navView, navController);
+                }
             }
 
             @Override

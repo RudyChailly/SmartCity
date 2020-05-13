@@ -1,4 +1,4 @@
-package com.example.smartcity.ui.connexion;
+package com.example.smartcity.ui.demarrage;
 
 import androidx.annotation.NonNull;
 
@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
+import com.example.smartcity.models.Interet.Interet;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -106,7 +107,7 @@ public class InscriptionFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Intent intent = new Intent(getContext(), MainActivity.class);
+                                Intent intent = new Intent(getContext(), Interets.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                                 getActivity().finish();

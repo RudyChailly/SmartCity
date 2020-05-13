@@ -1,4 +1,4 @@
-package com.example.smartcity.ui.connexion;
+package com.example.smartcity.ui.demarrage;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

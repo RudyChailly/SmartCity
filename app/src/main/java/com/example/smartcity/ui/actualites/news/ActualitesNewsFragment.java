@@ -46,8 +46,10 @@ public class ActualitesNewsFragment extends Fragment {
             ((MainActivity)getActivity()).getReferenceUtilisateurs().child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    ((MainActivity)getActivity()).setUtilisateur(dataSnapshot.getValue(Utilisateur.class));
-                    ((MainActivity)getActivity()).requestActualitesUtilisateur();
+                    if (((MainActivity)getActivity()) != null) {
+                        ((MainActivity) getActivity()).setUtilisateur(dataSnapshot.getValue(Utilisateur.class));
+                        ((MainActivity) getActivity()).requestActualitesUtilisateur();
+                    }
                 }
 
                 @Override

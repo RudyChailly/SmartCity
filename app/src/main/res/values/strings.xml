@@ -37,4 +37,7 @@
     <string name="mot_de_passe_pas_identiques">Please entrer the same password.</string>
     <string name="compte_existant">An account with this mail address already exists.</string>
     <string name="connexion_echec">Incorrect mail address or password.</string>
+    <string name="centres_interet">hobbies</string>
+    <string name="choix_centres_interet_message">Select your hobbies for a personalized experience.</string>
+    <string name="choix_centres_interet_erreur">Please select at least 1 hobbie.</string>
 </resources>
