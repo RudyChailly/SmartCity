@@ -40,4 +40,6 @@
     <string name="centres_interet">hobbies</string>
     <string name="choix_centres_interet_message">Select your hobbies for a personalized experience.</string>
     <string name="choix_centres_interet_erreur">Please select at least 1 hobbie.</string>
+    <string name="messages">messages</string>
+    <string name="message_placeholder">Send a message...</string>
 </resources>

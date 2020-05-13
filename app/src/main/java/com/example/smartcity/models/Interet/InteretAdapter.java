@@ -25,10 +25,6 @@ public class InteretAdapter extends ArrayAdapter<Interet> {
         super(context, 0, interets);
     }
 
-    public void addContext(Context context) {
-        this.context = context;
-    }
-
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.interet, parent, false);
@@ -48,13 +44,13 @@ public class InteretAdapter extends ArrayAdapter<Interet> {
                 if (context.getClass().equals(Interets.class)) {
                     if (((Interets)context).estSelectionne(interet.getId())) {
                         finalViewHolder.image.setBackgroundColor(Color.TRANSPARENT);
-                        finalViewHolder.nom.setTextColor(context.getResources().getColor(R.color.grey));
-                        ((Interets)context).deselectInteret(interet.getId());
+                        finalViewHolder.nom.setTextColor(getContext().getResources().getColor(R.color.grey));
+                        ((Interets)getContext()).deselectInteret(interet.getId());
                     }
                     else {
-                        finalViewHolder.image.setBackgroundColor(context.getResources().getColor(R.color.blue));
-                        finalViewHolder.nom.setTextColor(context.getResources().getColor(R.color.blue));
-                        ((Interets)context).selectInteret(interet.getId());
+                        finalViewHolder.image.setBackgroundColor(getContext().getResources().getColor(R.color.blue));
+                        finalViewHolder.nom.setTextColor(getContext().getResources().getColor(R.color.blue));
+                        ((Interets)getContext()).selectInteret(interet.getId());
                     }
                 }
             }

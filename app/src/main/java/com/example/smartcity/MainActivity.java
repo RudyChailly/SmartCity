@@ -131,14 +131,14 @@ public class MainActivity extends AppCompatActivity {
                                     Interet interet = dataSnapshot.getValue(Interet.class);
                                     if (interet != null) {
                                         actualite.setInteret(interet);
+                                        actualiteAdapter.add(actualite);
+                                        actualiteAdapter.notifyDataSetChanged();
                                     }
                                 }
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
                                 }
                             });
-                            actualiteAdapter.add(actualite);
-                            actualiteAdapter.notifyDataSetChanged();
                         }
                     }
                 }
@@ -157,40 +157,40 @@ public class MainActivity extends AppCompatActivity {
         if (commerceAdapter.getCount() == 0) {
             referenceCommerces.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        final Commerce commerce = snapshot.getValue(Commerce.class);
-                        if (utilisateur.estInteresse(commerce) || (utilisateur.getIdCommerces() != null && utilisateur.estAbonne(Integer.parseInt(snapshot.getKey())))) {
-                            commerce.setId(Integer.parseInt(snapshot.getKey()));
+                public void onDataChange(@NonNull DataSnapshot dataSnapshotCommerces) {
+                    for (final DataSnapshot snapshotCommerce : dataSnapshotCommerces.getChildren()) {
+                        final Commerce commerce = snapshotCommerce.getValue(Commerce.class);
+                        if (utilisateur.estInteresse(commerce) || (utilisateur.getIdCommerces() != null && utilisateur.estAbonne(Integer.parseInt(snapshotCommerce.getKey())))) {
+                            commerce.setId(Integer.parseInt(snapshotCommerce.getKey()));
                             referenceInterets.child(commerce.getIdInteret() + "").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    Interet interet = dataSnapshot.getValue(Interet.class);
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshotInterets) {
+                                    Interet interet = dataSnapshotInterets.getValue(Interet.class);
                                     if (interet != null) {
                                         commerce.setInteret(interet);
+                                        referenceVilles.child(commerce.getIdVille() + "").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshotVilles) {
+                                                Ville ville = dataSnapshotVilles.getValue(Ville.class);
+                                                if (ville != null) {
+                                                    commerce.setVille(ville);
+                                                }
+                                                if (utilisateur.estAbonne(Integer.parseInt(snapshotCommerce.getKey()))) {
+                                                    commerce.abonner();
+                                                }
+                                                commerceAdapter.add(commerce);
+                                                commerceAdapter.notifyDataSetChanged();
+                                            }
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            }
+                                        });
                                     }
                                 }
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
                                 }
                             });
-                            referenceVilles.child(commerce.getIdVille() + "").addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    Ville ville = dataSnapshot.getValue(Ville.class);
-                                    if (ville != null) {
-                                        commerce.setVille(ville);
-                                    }
-                                }
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                }
-                            });
-                            if (utilisateur.estAbonne(Integer.parseInt(snapshot.getKey()))) {
-                                commerce.abonner();
-                            }
-                            commerceAdapter.add(commerce);
-                            commerceAdapter.notifyDataSetChanged();
                         }
                     }
                 }
@@ -230,14 +230,14 @@ public class MainActivity extends AppCompatActivity {
                                     Commerce commerce = dataSnapshot.getValue(Commerce.class);
                                     if (commerce != null) {
                                         offre.setCommerce(commerce);
+                                        offreAdapter.add(offre);
+                                        offreAdapter.notifyDataSetChanged();
                                     }
                                 }
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
                                 }
                             });
-                            offreAdapter.add(offre);
-                            offreAdapter.notifyDataSetChanged();
                         }
                     }
                 }
@@ -301,6 +301,9 @@ public class MainActivity extends AppCompatActivity {
                                     Interet interet = dataSnapshot.getValue(Interet.class);
                                     if (interet != null) {
                                         groupe.setInteret(interet);
+                                        groupe.rejoindre();
+                                        groupeUtilisateurAdapter.add(groupe);
+                                        groupeUtilisateurAdapter.notifyDataSetChanged();
                                     }
                                 }
                                 @Override
@@ -319,9 +322,6 @@ public class MainActivity extends AppCompatActivity {
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
                                 }
                             });
-                            groupe.rejoindre();
-                            groupeUtilisateurAdapter.add(groupe);
-                            groupeUtilisateurAdapter.notifyDataSetChanged();
                         }
                     }
                 }
@@ -345,6 +345,8 @@ public class MainActivity extends AppCompatActivity {
                                     Interet interet = dataSnapshot.getValue(Interet.class);
                                     if (interet != null) {
                                         groupe.setInteret(interet);
+                                        groupeInteretsAdapter.add(groupe);
+                                        groupeInteretsAdapter.notifyDataSetChanged();
                                     }
                                 }
                                 @Override
@@ -363,8 +365,6 @@ public class MainActivity extends AppCompatActivity {
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
                                 }
                             });
-                            groupeInteretsAdapter.add(groupe);
-                            groupeInteretsAdapter.notifyDataSetChanged();
                         }
                     }
                 }

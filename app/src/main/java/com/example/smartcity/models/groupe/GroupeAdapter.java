@@ -3,6 +3,7 @@ package com.example.smartcity.models.groupe;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
+import com.example.smartcity.ui.chat.messages.MessageActivity;
 
 import java.util.List;
 
@@ -43,6 +45,15 @@ public class GroupeAdapter extends ArrayAdapter<Groupe> {
             viewHolder.interet.setText(groupe.getInteret().toString());
         }
         if (groupe.estRejoint()) {
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), MessageActivity.class);
+                    intent.putExtra("groupe_id", groupe.getId());
+                    intent.putExtra("groupe_nom", groupe.getNom());
+                    getContext().startActivity(intent);
+                }
+            });
             viewHolder.rejoint.setImageResource(R.drawable.ic_clear_black_24dp);
             viewHolder.rejoint.setColorFilter(ContextCompat.getColor(getContext(), R.color.red));
             viewHolder.rejoint.setOnClickListener(new View.OnClickListener() {

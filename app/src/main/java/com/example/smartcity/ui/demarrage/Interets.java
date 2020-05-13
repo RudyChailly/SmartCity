@@ -41,7 +41,6 @@ public class Interets extends AppCompatActivity {
         referenceInterets = database.getReference("Interets");
         interets = new ArrayList<>();
         interetAdapter = new InteretAdapter(Interets.this, interets);
-        interetAdapter.addContext(Interets.this);
         requestInterets();
         gridView_interets = findViewById(R.id.liste_interets);
         gridView_interets.setAdapter(interetAdapter);

@@ -47,18 +47,6 @@ public class Utilisateur {
         return idGroupes;
     }
 
-    public Utilisateur(String id, String nom, String prenom, String email, int idVille, ArrayList<Integer>  idCommerces, ArrayList<Integer>  idInterets, ArrayList<Integer>  idGroupes) {
-        this.id = id;
-        this.nom = nom;
-        this.prenom = prenom;
-        this.email = email;
-        this.idVille = idVille;
-        this.idCommerces = idCommerces;
-        this.idInterets = idInterets;
-        this.idGroupes = idGroupes;
-    }
-
-
     public String getNom() {
         return nom;
     }
@@ -118,6 +106,10 @@ public class Utilisateur {
 
     public boolean aRejoint(Integer idGroupe) {
         return idGroupes.contains(idGroupe);
+    }
+
+    public String toString() {
+        return this.prenom + " " + this.nom;
     }
 
 }
