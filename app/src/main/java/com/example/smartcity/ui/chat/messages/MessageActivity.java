@@ -100,12 +100,22 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 messages.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Message message = snapshot.getValue(Message.class);
+                    final Message message = snapshot.getValue(Message.class);
                     if (message.getIdGroupe().equals(idGroupe)) {
-                        messages.add(message);
+                        referenceUtilisateurs.child(message.getIdUtilisateur()).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                final Utilisateur utilisateur = dataSnapshot.getValue(Utilisateur.class);
+                                message.setUtilisateur(utilisateur);
+                                messages.add(message);
+                                messageAdapter = new MessageAdapter(MessageActivity.this, messages);
+                                recyclerView.setAdapter(messageAdapter);
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {}
+                        });
                     }
-                    messageAdapter = new MessageAdapter(MessageActivity.this, messages);
-                    recyclerView.setAdapter(messageAdapter);
+
                 }
             }
 

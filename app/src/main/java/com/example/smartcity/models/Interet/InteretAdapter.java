@@ -19,8 +19,6 @@ import java.util.List;
 
 public class InteretAdapter extends ArrayAdapter<Interet> {
 
-    private Context context;
-
     public InteretAdapter(Context context, List<Interet> interets) {
         super(context, 0, interets);
     }
@@ -41,8 +39,8 @@ public class InteretAdapter extends ArrayAdapter<Interet> {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (context.getClass().equals(Interets.class)) {
-                    if (((Interets)context).estSelectionne(interet.getId())) {
+                if (getContext().getClass().equals(Interets.class)) {
+                    if (((Interets)getContext()).estSelectionne(interet.getId())) {
                         finalViewHolder.image.setBackgroundColor(Color.TRANSPARENT);
                         finalViewHolder.nom.setTextColor(getContext().getResources().getColor(R.color.grey));
                         ((Interets)getContext()).deselectInteret(interet.getId());

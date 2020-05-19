@@ -48,6 +48,7 @@
             android:background="@drawable/rounded_8"
             android:padding="12dp"
             android:textSize="16dp"
+            android:inputType="textPassword"
             android:textColor="@color/grey"
             android:layout_marginBottom="20dp"/>
 
@@ -59,6 +60,7 @@
             android:background="@drawable/rounded_8"
             android:padding="12dp"
             android:textSize="16dp"
+            android:inputType="textPassword"
             android:textColor="@color/grey"
             android:layout_marginBottom="20dp"/>
 
