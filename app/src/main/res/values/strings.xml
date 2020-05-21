@@ -25,7 +25,6 @@
     <string name="nom">Last Name</string>
     <string name="prenom">First Name</string>
     <string name="email">Mail address</string>
-    <string name="plus_suivi">unfollowed</string>
     <string name="mot_de_passe">Password</string>
     <string name="confirmer_mot_de_passe">Confirm password</string>
     <string name="valider">validate</string>
@@ -46,4 +45,7 @@
     <string name="description">Description</string>
     <string name="centre_interet">Hobbie</string>
     <string name="nouveau_groupe">new group</string>
+    <string name="deconnexion">sign out</string>
+    <string name="parametres">settings</string>
+    <string name="plus_suivi">unfollowed</string>
 </resources>

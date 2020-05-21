@@ -11,7 +11,6 @@
     <string name="rechercher">rechercher</string>
     <string name="filtrer">filtrer</string>
     <string name="suivi">suivi</string>
-    <string name="plus_suivi" translatable="false">n\'est plus suivi</string>
     <string name="se_desabonner">Se désabonner de</string>
     <string name="oui">Oui</string>
     <string name="non">Non</string>
@@ -44,4 +43,7 @@
     <string name="description">Description</string>
     <string name="centre_interet">Centre d\'interêt</string>
     <string name="nouveau_groupe">nouveau groupe</string>
+    <string name="deconnexion">déconnexion</string>
+    <string name="parametres">parametres</string>
+    <string name="plus_suivi">n\'est plus suivi</string>
 </resources>

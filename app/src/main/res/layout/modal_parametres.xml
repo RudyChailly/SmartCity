@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/parametres"
+            android:gravity="center"
+            android:textSize="22dp"
+            android:textAllCaps="true"
+            android:textColor="@color/blue"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#aaaaaa" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="12dp">
+
+        <Button
+        android:textSize="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/parametres_bouton_interets"
+        android:text="@string/centres_interet"
+        android:textColor="@color/blue"
+        android:textStyle="bold"
+        android:background="@drawable/rounded_50_outline"/>
+
+        <Button
+            android:layout_marginTop="12dp"
+            android:textSize="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:id="@+id/parametres_bouton_deconnexion"
+            android:text="@string/deconnexion"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:background="@drawable/rounded_50"
+            android:backgroundTint="@color/red"/>
+
+    </LinearLayout>
+
+</LinearLayout>

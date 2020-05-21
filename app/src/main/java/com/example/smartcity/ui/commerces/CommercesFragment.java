@@ -5,7 +5,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
@@ -41,7 +43,13 @@ public class CommercesFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_commerces, container, false);
         ViewPager viewPager = (ViewPager)root.findViewById(R.id.view_pager);
         setViewPager(viewPager);
-
+        ImageButton bouton_parametres = root.findViewById(R.id.bouton_parametres);
+        bouton_parametres.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "PARAMETRES", Toast.LENGTH_SHORT).show();
+            }
+        });
         ((TabLayout)root.findViewById(R.id.commerces_tabs)).setupWithViewPager(viewPager);
         return root;
     }

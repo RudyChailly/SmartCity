@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
 import com.example.smartcity.ui.demarrage.Interets;
 
@@ -36,6 +37,11 @@ public class InteretAdapter extends ArrayAdapter<Interet> {
         final Interet interet = getItem(position);
         viewHolder.nom.setText(interet.getNom());
         final InteretViewHolder finalViewHolder = viewHolder;
+        if (MainActivity.getUtilisateur() != null && MainActivity.getUtilisateur().getIdInterets().contains(interet.getId())) {
+            finalViewHolder.image.setBackgroundColor(getContext().getResources().getColor(R.color.blue));
+            finalViewHolder.nom.setTextColor(getContext().getResources().getColor(R.color.blue));
+            ((Interets)getContext()).selectInteret(interet.getId());
+        }
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

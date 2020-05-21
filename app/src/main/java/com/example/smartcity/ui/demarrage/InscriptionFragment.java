@@ -110,6 +110,7 @@ public class InscriptionFragment extends Fragment {
 
                                 Intent intent = new Intent(getContext(), Interets.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.putExtra("redirectActivity", true);
                                 startActivity(intent);
                                 getActivity().finish();
                             }

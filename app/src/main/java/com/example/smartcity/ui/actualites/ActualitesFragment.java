@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -13,6 +15,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.smartcity.ParametresBottomSheetDialog;
 import com.example.smartcity.R;
 import com.example.smartcity.ui.actualites.agenda.ActualitesAgendaFragment;
 import com.example.smartcity.ui.actualites.alarmes.ActualitesAlarmesFragment;
@@ -33,6 +36,14 @@ public class ActualitesFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_actualites, container, false);
         ViewPager viewPager = (ViewPager)root.findViewById(R.id.view_pager);
         setViewPager(viewPager);
+        ImageButton bouton_parametres = root.findViewById(R.id.bouton_parametres);
+        bouton_parametres.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParametresBottomSheetDialog modal_parametres = new ParametresBottomSheetDialog();
+                modal_parametres.show(getFragmentManager(), "modalParametres");
+            }
+        });
 
         ((TabLayout)root.findViewById(R.id.actualites_tabs)).setupWithViewPager(viewPager);
         return root;

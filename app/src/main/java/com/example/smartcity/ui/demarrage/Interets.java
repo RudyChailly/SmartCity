@@ -44,8 +44,14 @@ public class Interets extends AppCompatActivity {
         requestInterets();
         gridView_interets = findViewById(R.id.liste_interets);
         gridView_interets.setAdapter(interetAdapter);
-        idInteretsSelectionnes = new ArrayList<>();
 
+        idInteretsSelectionnes = new ArrayList<>();
+        /*if (getIntent() != null && getIntent().hasExtra("idInteretsSelectionnes")) {
+            ArrayList<String> idInteretsUtilisateur = getIntent().getStringArrayListExtra("idInteretsSelectionnes");
+            for (String idInteret : idInteretsUtilisateur) {
+                this.selectInteret(idInteret);
+            }
+        }*/
         findViewById(R.id.bouton_interets).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,9 +100,14 @@ public class Interets extends AppCompatActivity {
         else {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             database.getReference("Utilisateurs").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("idInterets").setValue(idInteretsSelectionnes);
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            if (getIntent() != null && getIntent().hasExtra("redirect") && getIntent().getBooleanExtra("redirectActivity", true) == true) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+            else {
+                MainActivity.refresh();
+            }
             finish();
         }
     }
