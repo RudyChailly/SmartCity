@@ -5,16 +5,16 @@ import com.example.smartcity.models.Ville;
 
 public class Groupe {
 
-    private Integer id;
+    private String id;
     private String nom;
     private boolean rejoint;
 
-    private Integer idVille;
+    private String idVille;
     private Ville ville;
 
-    private Integer idInteret;
+    private String idInteret;
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -30,19 +30,19 @@ public class Groupe {
         this.rejoint = rejoint;
     }
 
-    public Integer getIdVille() {
+    public String getIdVille() {
         return idVille;
     }
 
-    public void setIdVille(Integer idVille) {
+    public void setIdVille(String idVille) {
         this.idVille = idVille;
     }
 
-    public Integer getIdInteret() {
+    public String getIdInteret() {
         return idInteret;
     }
 
-    public void setIdInteret(Integer idInteret) {
+    public void setIdInteret(String idInteret) {
         this.idInteret = idInteret;
     }
 
@@ -51,7 +51,7 @@ public class Groupe {
     public Groupe() {}
 
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 

@@ -5,17 +5,17 @@ import com.example.smartcity.models.Ville;
 
 public class Commerce {
 
-    private Integer id;
+    private String id;
     private String nom, adresse;
     private boolean abonne;
 
-    private int idVille;
+    private String idVille;
     private Ville ville;
 
-    private int idInteret;
+    private String idInteret;
     private Interet interet;
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -35,19 +35,19 @@ public class Commerce {
         this.abonne = abonne;
     }
 
-    public int getIdVille() {
+    public String getIdVille() {
         return idVille;
     }
 
-    public void setIdVille(int idVille) {
+    public void setIdVille(String idVille) {
         this.idVille = idVille;
     }
 
-    public int getIdInteret() {
+    public String getIdInteret() {
         return idInteret;
     }
 
-    public void setIdInteret(int idInteret) {
+    public void setIdInteret(String idInteret) {
         this.idInteret = idInteret;
     }
 
@@ -56,7 +56,7 @@ public class Commerce {
         this.abonne = false;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 

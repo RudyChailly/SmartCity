@@ -42,4 +42,8 @@
     <string name="choix_centres_interet_erreur">Please select at least 1 hobbie.</string>
     <string name="messages">messages</string>
     <string name="message_placeholder">Send a message...</string>
+    <string name="nom_groupe">Group name</string>
+    <string name="description">Description</string>
+    <string name="centre_interet">Hobbie</string>
+    <string name="nouveau_groupe">new group</string>
 </resources>

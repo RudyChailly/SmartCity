@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class Interets extends AppCompatActivity {
 
     private ArrayList<Interet> interets;
-    private ArrayList<Integer> idInteretsSelectionnes;
+    private ArrayList<String> idInteretsSelectionnes;
     private InteretAdapter interetAdapter;
     private GridView gridView_interets;
     private DatabaseReference referenceUtilisateur, referenceInterets;
@@ -61,7 +61,7 @@ public class Interets extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         final Interet interet = snapshot.getValue(Interet.class);
-                        interet.setId(Integer.parseInt(snapshot.getKey()));
+                        interet.setId(snapshot.getKey());
                         interetAdapter.add(interet);
                     }
                 }
@@ -71,17 +71,17 @@ public class Interets extends AppCompatActivity {
         }
     }
 
-    public boolean estSelectionne(Integer id) {
+    public boolean estSelectionne(String id) {
         return idInteretsSelectionnes.contains(id);
     }
 
-    public void selectInteret(Integer id) {
+    public void selectInteret(String id) {
         if (!idInteretsSelectionnes.contains(id)) {
             idInteretsSelectionnes.add(id);
         }
     }
 
-    public void deselectInteret(Integer id) {
+    public void deselectInteret(String id) {
         if (idInteretsSelectionnes.contains(id)) {
             idInteretsSelectionnes.remove(id);
         }

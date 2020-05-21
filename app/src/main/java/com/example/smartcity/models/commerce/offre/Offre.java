@@ -11,7 +11,7 @@ public class Offre {
 
     private String intitule, intituleCourt, description, date;
     private double prix;
-    private int idCommerce;
+    private String idCommerce;
     private Commerce commerce;
 
     public Offre(){}
@@ -42,11 +42,11 @@ public class Offre {
         this.prix = prix;
     }
 
-    public int getIdCommerce() {
+    public String getIdCommerce() {
         return idCommerce;
     }
 
-    public void setIdCommerce(int idCommerce) {
+    public void setIdCommerce(String idCommerce) {
         this.idCommerce = idCommerce;
     }
 
@@ -77,7 +77,7 @@ public class Offre {
     }
 
     public boolean equals(Offre offre) {
-        return ((this.getIdCommerce() == offre.getIdCommerce()) && (this.getIntitule().equals(offre.getIntitule())) && (this.getDate().equals(offre.getDate())));
+        return ((this.getIdCommerce().equals(offre.getIdCommerce())) && (this.getIntitule().equals(offre.getIntitule())) && (this.getDate().equals(offre.getDate())));
     }
 
 }

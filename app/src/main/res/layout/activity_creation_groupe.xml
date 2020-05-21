@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.chat.messages.MessageActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Tabs">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minHeight="?actionBarSize"
+            android:padding="@dimen/appbar_padding"
+            android:text="@string/nouveau_groupe"
+            android:textAllCaps="true"
+            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/background">
+
+    <EditText
+        android:layout_marginTop="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/creation_groupe_nom"
+        android:hint="@string/nom_groupe"
+        android:background="@drawable/rounded_8"
+        android:padding="12dp"
+        android:textSize="16dp"
+        android:textColor="@color/grey"
+        android:layout_marginBottom="20dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/creation_groupe_description"
+        android:hint="@string/description"
+        android:background="@drawable/rounded_8"
+        android:padding="12dp"
+        android:textSize="16dp"
+        android:textColor="@color/grey"
+        android:layout_marginBottom="20dp"/>
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_8"
+        android:id="@+id/creation_groupe_interet"
+        android:hint="@string/centre_interet"
+        android:padding="12dp"
+        android:textSize="16dp"
+        android:textColor="@color/grey"/>
+
+    <Button
+        android:layout_marginTop="16dp"
+        android:textSize="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/creation_groupe_valider"
+        android:text="@string/valider"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:background="@drawable/rounded_50"
+        android:backgroundTint="@color/blue"/>
+
+</LinearLayout>
+
+</LinearLayout>

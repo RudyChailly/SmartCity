@@ -20,6 +20,7 @@ import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
 import com.example.smartcity.ui.chat.messages.MessageActivity;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class GroupeAdapter extends ArrayAdapter<Groupe> {

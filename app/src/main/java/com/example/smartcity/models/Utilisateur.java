@@ -9,21 +9,21 @@ import java.util.ArrayList;
 public class Utilisateur {
 
     private String id, nom, prenom, email;
-    private int idVille;
-    private ArrayList<Integer> idCommerces;
-    private ArrayList<Integer> idInterets;
-    private ArrayList<Integer> idGroupes;
+    private String idVille;
+    private ArrayList<String> idCommerces;
+    private ArrayList<String> idInterets;
+    private ArrayList<String> idGroupes;
     public Utilisateur() {
         idCommerces = new ArrayList<>();
         idInterets = new ArrayList<>();
         idGroupes = new ArrayList<>();
     }
 
-    public void setIdInterets(ArrayList<Integer> idInterets) {
+    public void setIdInterets(ArrayList<String> idInterets) {
         this.idInterets = idInterets;
     }
 
-    public void setIdGroupes(ArrayList<Integer> idGroupes) {
+    public void setIdGroupes(ArrayList<String> idGroupes) {
         this.idGroupes = idGroupes;
     }
 
@@ -39,11 +39,11 @@ public class Utilisateur {
         return email;
     }
 
-    public int getIdVille() {
+    public String getIdVille() {
         return idVille;
     }
 
-    public ArrayList<Integer> getIdGroupes() {
+    public ArrayList<String> getIdGroupes() {
         return idGroupes;
     }
 
@@ -67,36 +67,31 @@ public class Utilisateur {
         this.email = email;
     }
 
-    public void setIdVille(int idVille) {
+    public void setIdVille(String idVille) {
         this.idVille = idVille;
     }
 
-    public void setIdCommerces(ArrayList<Integer> idCommerces) {
+    public void setIdCommerces(ArrayList<String> idCommerces) {
         this.idCommerces = idCommerces;
     }
 
-    public ArrayList<Integer>  getIdCommerces() {
+    public ArrayList<String>  getIdCommerces() {
         return idCommerces;
     }
 
-    public ArrayList<Integer>  getIdInterets() {
+    public ArrayList<String>  getIdInterets() {
         return idInterets;
     }
 
     public boolean estInteresse(Actualite actualite) {
-        for (Integer idInteret : idInterets) {
-            if (idInteret == actualite.getIdInteret()) {
-                return true;
-            }
-        }
-        return false;
+        return idInterets.contains(actualite.getIdInteret());
     }
 
     public boolean estInteresse(Commerce commerce) {
         return idInterets.contains(commerce.getIdInteret());
     }
 
-    public boolean estAbonne(Integer idCommerce) {
+    public boolean estAbonne(String idCommerce) {
         return idCommerces.contains(idCommerce);
     }
 
@@ -104,7 +99,7 @@ public class Utilisateur {
         return idInterets.contains(groupe.getIdInteret());
     }
 
-    public boolean aRejoint(Integer idGroupe) {
+    public boolean aRejoint(String idGroupe) {
         return idGroupes.contains(idGroupe);
     }
 

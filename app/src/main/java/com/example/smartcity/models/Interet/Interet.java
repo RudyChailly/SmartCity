@@ -5,21 +5,15 @@ import org.json.JSONObject;
 
 public class Interet {
 
-    private Integer id;
-    private String nom;
+    private String id, nom;
 
     public Interet(){}
 
-    public Interet(Integer id, String nom) {
-        this.id = id;
-        this.nom = nom;
-    }
-
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 

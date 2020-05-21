@@ -19,13 +19,13 @@ public class Actualite {
         this.source = source;
     }
 
-    public void setIdInteret(int idInteret) {
+    public void setIdInteret(String idInteret) {
         this.idInteret = idInteret;
     }
 
     private String titre, url, date, source;
     private Interet interet;
-    private int idInteret;
+    private String idInteret;
 
     public Actualite(){}
 
@@ -45,7 +45,7 @@ public class Actualite {
         return date;
     }
 
-    public long getIdInteret() {
+    public String getIdInteret() {
         return  idInteret;
     }
 

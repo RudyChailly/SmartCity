@@ -33,24 +33,25 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<Actualite> actualitesUtilisateur;
-    private ArrayList<Commerce> commercesUtilisateur, allCommerces;
-    private ArrayList<Offre> offresUtilisateur;
+    private static ArrayList<Actualite> actualitesUtilisateur;
+    private static ArrayList<Commerce> commercesUtilisateur;
+    private static ArrayList<Offre> offresUtilisateur;
 
-    private ArrayList<Groupe> groupesUtilisateur, groupesInterets;
+    private static ArrayList<Groupe> groupesUtilisateur, groupesInterets;
 
-    private ActualiteAdapter actualiteAdapter;
-    private OffreAdapter offreAdapter;
-    private CommerceAdapter commerceAdapter;
-    private GroupeAdapter groupeUtilisateurAdapter, groupeInteretsAdapter;
+    private static ActualiteAdapter actualiteAdapter;
+    private static OffreAdapter offreAdapter;
+    private static CommerceAdapter commerceAdapter;
+    private static GroupeAdapter groupeUtilisateurAdapter, groupeInteretsAdapter;
 
-    private Utilisateur utilisateur;
+    private static Utilisateur utilisateur;
 
-    DatabaseReference
+    private static DatabaseReference
             referenceActualites,
             referenceInterets,
             referenceCommerces,
@@ -83,10 +84,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /******************************************** UTILISATEURS ********************************************/
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
+    public static void setUtilisateur(Utilisateur value) {
+        utilisateur = value;
     }
-    public Utilisateur getUtilisateur() {
+    public static Utilisateur getUtilisateur() {
         return utilisateur;
     }
 
@@ -160,8 +161,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshotCommerces) {
                     for (final DataSnapshot snapshotCommerce : dataSnapshotCommerces.getChildren()) {
                         final Commerce commerce = snapshotCommerce.getValue(Commerce.class);
-                        if (utilisateur.estInteresse(commerce) || (utilisateur.getIdCommerces() != null && utilisateur.estAbonne(Integer.parseInt(snapshotCommerce.getKey())))) {
-                            commerce.setId(Integer.parseInt(snapshotCommerce.getKey()));
+                        if (utilisateur.estInteresse(commerce) || (utilisateur.getIdCommerces() != null && utilisateur.estAbonne(snapshotCommerce.getKey()))) {
+                            commerce.setId(snapshotCommerce.getKey());
                             referenceInterets.child(commerce.getIdInteret() + "").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshotInterets) {
@@ -175,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                                                 if (ville != null) {
                                                     commerce.setVille(ville);
                                                 }
-                                                if (utilisateur.estAbonne(Integer.parseInt(snapshotCommerce.getKey()))) {
+                                                if (utilisateur.estAbonne(snapshotCommerce.getKey())) {
                                                     commerce.abonner();
                                                 }
                                                 commerceAdapter.add(commerce);
@@ -204,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         return commerceAdapter;
     }
 
-    public void requestCommerceAbonner(final Commerce commerce) {
+    public static void requestCommerceAbonner(final Commerce commerce) {
         utilisateur.getIdCommerces().add(commerce.getId());
         referenceUtilisateurs.child(utilisateur.getId()+"").child("idCommerces").setValue(utilisateur.getIdCommerces());
         refreshOffresAbonner(commerce);
@@ -246,13 +247,13 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-    public void refreshOffresAbonner(final Commerce commerce) {
+    public static void refreshOffresAbonner(final Commerce commerce) {
         referenceOffres.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     final Offre offre = snapshot.getValue(Offre.class);
-                    if (offre.getIdCommerce() == commerce.getId()) {
+                    if (offre.getIdCommerce().equals(commerce.getId())) {
                         offre.setCommerce(commerce);
                         offreAdapter.add(offre);
                         offreAdapter.notifyDataSetChanged();
@@ -269,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     final Offre offre = snapshot.getValue(Offre.class);
-                    if (offre.getIdCommerce() == commerce.getId()) {
+                    if (offre.getIdCommerce().equals(commerce.getId())) {
                         offre.setCommerce(commerce);
                         offreAdapter.removeOffre(offre);
                         offreAdapter.notifyDataSetChanged();
@@ -286,14 +287,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /******************************************** GROUPES ********************************************/
-    public void requestGroupesUtilisateur() {
+    public static void requestGroupesUtilisateur() {
         if (groupeUtilisateurAdapter.getCount() == 0) {
             referenceGroupes.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         final Groupe groupe = snapshot.getValue(Groupe.class);
-                        groupe.setId(Integer.parseInt(snapshot.getKey()));
+                        groupe.setId(snapshot.getKey());
                         if (utilisateur.aRejoint(groupe.getId())) {
                             referenceInterets.child(groupe.getIdInteret() + "").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -330,14 +331,14 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-    public void requestGroupesInteret() {
+    public static void requestGroupesInteret() {
         if (groupeInteretsAdapter.getCount() == 0) {
             referenceGroupes.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         final Groupe groupe = snapshot.getValue(Groupe.class);
-                        groupe.setId(Integer.parseInt(snapshot.getKey()));
+                        groupe.setId(snapshot.getKey());
                         if (utilisateur.estInteresse(groupe) && !(utilisateur.aRejoint(groupe.getId()))) {
                             referenceInterets.child(groupe.getIdInteret() + "").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -374,13 +375,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void requestGroupeRejoindre(final Groupe groupe) {
+    public static void requestGroupeRejoindre(final Groupe groupe) {
         utilisateur.getIdGroupes().add(groupe.getId());
         referenceUtilisateurs.child(utilisateur.getId()+"").child("idGroupes").setValue(utilisateur.getIdGroupes());
         groupeInteretsAdapter.remove(groupe);
         groupeUtilisateurAdapter.add(groupe);
     }
-    public void requestGroupeQuitter(final Groupe groupe) {
+    public static void requestGroupeQuitter(final Groupe groupe) {
         utilisateur.getIdGroupes().remove(groupe.getId());
         referenceUtilisateurs.child(utilisateur.getId()+"").child("idGroupes").setValue(utilisateur.getIdGroupes());
         groupeUtilisateurAdapter.remove(groupe);

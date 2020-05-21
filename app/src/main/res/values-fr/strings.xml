@@ -40,4 +40,8 @@
     <string name="choix_centres_interet_erreur">Merci de sélectionner au moins 1 centre d\'interêt.</string>
     <string name="messages">messages</string>
     <string name="message_placeholder">Envoyer un message...</string>
+    <string name="nom_groupe">Nom du groupe</string>
+    <string name="description">Description</string>
+    <string name="centre_interet">Centre d\'interêt</string>
+    <string name="nouveau_groupe">nouveau groupe</string>
 </resources>

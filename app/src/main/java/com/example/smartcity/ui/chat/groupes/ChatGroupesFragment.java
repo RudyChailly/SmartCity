@@ -1,5 +1,6 @@
 package com.example.smartcity.ui.chat.groupes;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -58,10 +59,21 @@ public class ChatGroupesFragment extends Fragment {
             ((MainActivity)getActivity()).requestGroupesUtilisateur();
         }
         listView_groupes.setAdapter(((MainActivity)getActivity()).getGroupeUtilisateurAdapter());
+
+        view.findViewById(R.id.bouton_nouv_groupe).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                creationGroupe();
+            }
+        });
+
         return view;
     }
 
-
+    public void creationGroupe() {
+        Intent creationGroupeIntent = new Intent(getContext(), CreationGroupe.class);
+        startActivity(creationGroupeIntent);
+    }
 
 
 
