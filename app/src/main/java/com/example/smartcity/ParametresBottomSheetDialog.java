@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,7 +30,7 @@ public class ParametresBottomSheetDialog extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.modal_parametres, container, false);
-        Button parametres_bouton_interets = view.findViewById(R.id.parametres_bouton_interets);
+        TextView parametres_bouton_interets = view.findViewById(R.id.parametres_bouton_interets);
         parametres_bouton_interets.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -39,7 +40,7 @@ public class ParametresBottomSheetDialog extends BottomSheetDialogFragment {
                 dismiss();
             }
         });
-        Button parametres_bouton_deconnexion = view.findViewById(R.id.parametres_bouton_deconnexion);
+        TextView parametres_bouton_deconnexion = view.findViewById(R.id.parametres_bouton_deconnexion);
         parametres_bouton_deconnexion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

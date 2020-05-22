@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.smartcity.MainActivity;
+import com.example.smartcity.ParametresBottomSheetDialog;
 import com.example.smartcity.R;
 import com.example.smartcity.ui.actualites.ActualitesFragment;
 import com.example.smartcity.ui.actualites.agenda.ActualitesAgendaFragment;
@@ -47,7 +48,8 @@ public class CommercesFragment extends Fragment {
         bouton_parametres.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "PARAMETRES", Toast.LENGTH_SHORT).show();
+                ParametresBottomSheetDialog modal_parametres = new ParametresBottomSheetDialog();
+                modal_parametres.show(getFragmentManager(), "modalParametres");
             }
         });
         ((TabLayout)root.findViewById(R.id.commerces_tabs)).setupWithViewPager(viewPager);

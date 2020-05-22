@@ -19,13 +19,20 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.smartcity.MainActivity;
+import com.example.smartcity.ParametresBottomSheetDialog;
 import com.example.smartcity.R;
+import com.example.smartcity.notifications.Token;
 import com.example.smartcity.ui.chat.groupes.ChatGroupesFragment;
 import com.example.smartcity.ui.chat.recherche.ChatRechercheFragment;
 import com.example.smartcity.ui.commerces.CommercesFragment;
 import com.example.smartcity.ui.commerces.liste.CommercesListeFragment;
 import com.example.smartcity.ui.commerces.offres.CommercesOffresFragment;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +51,14 @@ public class ChatFragment extends Fragment {
         bouton_parametres.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "PARAMETRES", Toast.LENGTH_SHORT).show();
+                ParametresBottomSheetDialog modal_parametres = new ParametresBottomSheetDialog();
+                modal_parametres.show(getFragmentManager(), "modalParametres");
             }
         });
         ((TabLayout)root.findViewById(R.id.chat_tabs)).setupWithViewPager(viewPager);
+
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+
         return root;
     }
 
@@ -87,5 +98,12 @@ public class ChatFragment extends Fragment {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }
+
+    public void updateToken(String refreshToken) {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token token = new Token(refreshToken);
+        reference.child(firebaseUser.getUid()).setValue(token);
     }
 }

@@ -48,4 +48,8 @@
     <string name="deconnexion">sign out</string>
     <string name="parametres">settings</string>
     <string name="plus_suivi">unfollowed</string>
+    <string name="message_nom_groupe_trop_court">Name must be at least 3 characters.</string>
+    <string name="message_nom_groupe_trop_long">Name must be maximum 15 charcaters</string>
+    <string name="message_description_trop_long">Description must be maximum 20 characters.</string>
+    <string name="message_select_interet">Please select a hobbie.</string>
 </resources>

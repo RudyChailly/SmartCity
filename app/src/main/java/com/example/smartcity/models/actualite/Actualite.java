@@ -23,9 +23,17 @@ public class Actualite {
         this.idInteret = idInteret;
     }
 
-    private String titre, url, date, source;
+    private String titre, url, date, source, id;
     private Interet interet;
     private String idInteret;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Actualite(){}
 
@@ -59,6 +67,10 @@ public class Actualite {
 
     public String toString() {
         return titre + ":\n - " + source + "\n - " + date + "\n";
+    }
+
+    public boolean equals(Actualite actualite) {
+        return this.getId().equals(actualite.getId());
     }
 
 }

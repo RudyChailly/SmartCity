@@ -46,4 +46,8 @@
     <string name="deconnexion">déconnexion</string>
     <string name="parametres">parametres</string>
     <string name="plus_suivi">n\'est plus suivi</string>
+    <string name="message_nom_groupe_trop_court">Le nom doit contenir au moins 3 caratères.</string>
+    <string name="message_nom_groupe_trop_long">Le nom doit contenir au maximum  15 caratères.</string>
+    <string name="message_description_trop_long">La description doit contenir au maximum  20 caratères.</string>
+    <string name="message_select_interet">Merci de sélectionner un centre d\'interêt.</string>
 </resources>

@@ -8,6 +8,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -76,8 +78,10 @@ public class CreationGroupe extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Interet interet = snapshot.getValue(Interet.class);
                     interet.setId(snapshot.getKey());
-                    liste_interets.add(interet);
-                    adapter.notifyDataSetChanged();
+                    if (MainActivity.getUtilisateur().getIdInterets().contains(interet.getId())) {
+                        liste_interets.add(interet);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
             }
 
@@ -96,39 +100,68 @@ public class CreationGroupe extends AppCompatActivity {
     }
 
     public void valider() {
-        if (interetSelectionne != null) {
-            HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("idInteret", interetSelectionne.getId());
-            hashMap.put("idVille", "1");
-            hashMap.put("nom", ((EditText)findViewById(R.id.creation_groupe_nom)).getText().toString());
-            hashMap.put("description", ((EditText)findViewById(R.id.creation_groupe_description)).getText().toString());
+            String nomValue = ((EditText)findViewById(R.id.creation_groupe_nom)).getText().toString();
+            String descriptionValue =  ((EditText)findViewById(R.id.creation_groupe_description)).getText().toString();
 
-            final String key =  referenceGroupes.push().getKey();
+            if (nomValue.length() > 15) {
+                showDialogError(getResources().getString(R.string.message_nom_groupe_trop_long));
+            }
+            else if (nomValue.length() < 3) {
+                showDialogError(getResources().getString(R.string.message_nom_groupe_trop_court));
+            }
+            else if (descriptionValue.length() > 20) {
+                showDialogError(getResources().getString(R.string.message_description_trop_long));
+            }
+            else if (interetSelectionne == null) {
+                showDialogError(getResources().getString(R.string.message_select_interet));
+            }
+            else {
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("idInteret", interetSelectionne.getId());
+                hashMap.put("idVille", "1");
+                hashMap.put("nom", nomValue);
+                hashMap.put("description", descriptionValue);
 
-            referenceGroupes.child(key).setValue(hashMap);
-            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-            referenceGroupes.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshotGroupe) {
-                    final Groupe groupe = dataSnapshotGroupe.getValue(Groupe.class);
-                    referenceInterets.child(groupe.getIdInteret()).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshotInteret) {
-                            Interet interet = dataSnapshotInteret.getValue(Interet.class);
-                            groupe.setInteret(interet);
-                            groupe.rejoindre();
-                            MainActivity.requestGroupeRejoindre(groupe);
-                            finish();
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {}
-                    });
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {}
-            });
+                final String key = referenceGroupes.push().getKey();
 
-        }
+                referenceGroupes.child(key).setValue(hashMap);
+                referenceGroupes.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshotGroupe) {
+                        final Groupe groupe = dataSnapshotGroupe.getValue(Groupe.class);
+                        referenceInterets.child(groupe.getIdInteret()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshotInteret) {
+                                Interet interet = dataSnapshotInteret.getValue(Interet.class);
+                                groupe.setInteret(interet);
+                                groupe.rejoindre();
+                                MainActivity.requestGroupeRejoindre(groupe);
+                                finish();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+            }
+    }
+
+    public void showDialogError(String message) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setCancelable(false);
+        dialog.setTitle(message);
+        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {}
+        });
+        AlertDialog alert = dialog.create();
+        alert.show();
     }
 
 

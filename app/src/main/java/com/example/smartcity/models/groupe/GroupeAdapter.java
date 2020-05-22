@@ -39,19 +39,23 @@ public class GroupeAdapter extends ArrayAdapter<Groupe> {
             viewHolder.nom = (TextView)convertView.findViewById(R.id.groupe_nom);
             viewHolder.interet = (TextView)convertView.findViewById(R.id.groupe_interet);
             viewHolder.rejoint = (ImageView) convertView.findViewById(R.id.groupe_rejoint);
+            viewHolder.description = (TextView)convertView.findViewById(R.id.groupe_description);
         }
         final Groupe groupe = getItem(position);
         viewHolder.nom.setText(groupe.getNom());
         if (groupe.getInteret() != null) {
             viewHolder.interet.setText(groupe.getInteret().toString());
         }
+        if (groupe.getDescription() != null && groupe.getDescription().length() > 0) {
+            viewHolder.description.setText(groupe.getDescription());
+        }
         if (groupe.estRejoint()) {
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(), MessageActivity.class);
-                    intent.putExtra("groupe_id", groupe.getId());
-                    intent.putExtra("groupe_nom", groupe.getNom());
+                    intent.putExtra("idGroupe", groupe.getId());
+                    intent.putExtra("nomGroupe", groupe.getNom());
                     getContext().startActivity(intent);
                 }
             });
@@ -115,7 +119,7 @@ public class GroupeAdapter extends ArrayAdapter<Groupe> {
         public TextView nom;
         public TextView ville;
         public TextView interet;
-        public TextView message;
+        public TextView description;
         public ImageView rejoint;
     }
 

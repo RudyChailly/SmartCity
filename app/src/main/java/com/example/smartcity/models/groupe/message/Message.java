@@ -7,13 +7,13 @@ public class Message {
     private String idUtilisateur;
     private Utilisateur utilisateur;
 
-    private Integer idGroupe;
+    private String idGroupe;
 
     private String contenu;
 
     public Message(){}
 
-    public Message(String idUtilisateur, Integer idGroupe, String contenu) {
+    public Message(String idUtilisateur, String idGroupe, String contenu) {
         this.idUtilisateur = idUtilisateur;
         this.idGroupe = idGroupe;
         this.contenu = contenu;
@@ -35,11 +35,11 @@ public class Message {
         this.utilisateur = utilisateur;
     }
 
-    public Integer getIdGroupe() {
+    public String getIdGroupe() {
         return idGroupe;
     }
 
-    public void setIdGroupe(Integer idGroupe) {
+    public void setIdGroupe(String idGroupe) {
         this.idGroupe = idGroupe;
     }
 

@@ -8,9 +8,18 @@ public class Groupe {
     private String id;
     private String nom;
     private boolean rejoint;
+    private String description;
 
     private String idVille;
     private Ville ville;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     private String idInteret;
 
@@ -48,7 +57,9 @@ public class Groupe {
 
     private Interet interet;
 
-    public Groupe() {}
+    public Groupe() {
+        this.description = "";
+    }
 
 
     public String getId() {

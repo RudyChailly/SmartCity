@@ -100,7 +100,7 @@ public class Interets extends AppCompatActivity {
         else {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             database.getReference("Utilisateurs").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("idInterets").setValue(idInteretsSelectionnes);
-            if (getIntent() != null && getIntent().hasExtra("redirect") && getIntent().getBooleanExtra("redirectActivity", true) == true) {
+            if (getIntent() != null && getIntent().hasExtra("redirectToMainActivity") && getIntent().getBooleanExtra("redirectToMainActivity", true) == true) {
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);

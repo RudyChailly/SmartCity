@@ -126,15 +126,18 @@ public class MainActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         final Actualite actualite = snapshot.getValue(Actualite.class);
-                        if (utilisateur.estInteresse(actualite)) {
+                        actualite.setId(snapshot.getKey());
+                        if (!(actualiteAdapter.contains(actualite)) && utilisateur.estInteresse(actualite)) {
                             referenceInterets.child(actualite.getIdInteret() + "").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     Interet interet = dataSnapshot.getValue(Interet.class);
                                     if (interet != null) {
                                         actualite.setInteret(interet);
-                                        actualiteAdapter.add(actualite);
-                                        actualiteAdapter.notifyDataSetChanged();
+                                        if (!actualiteAdapter.contains(actualite)) {
+                                            actualiteAdapter.add(actualite);
+                                            actualiteAdapter.notifyDataSetChanged();
+                                        }
                                     }
                                 }
                                 @Override
@@ -428,12 +431,15 @@ public class MainActivity extends AppCompatActivity {
 
     public static void refresh() {
         actualitesUtilisateur.clear();
+        requestActualitesUtilisateur();
         actualiteAdapter.notifyDataSetChanged();
 
         commercesUtilisateur.clear();
+        requestCommercesUtilisateur();
         commerceAdapter.notifyDataSetChanged();
 
         groupesInterets.clear();
+        requestGroupesInteret();
         groupeInteretsAdapter.notifyDataSetChanged();
     }
 

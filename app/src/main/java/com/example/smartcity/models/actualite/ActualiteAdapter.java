@@ -41,6 +41,15 @@ public class ActualiteAdapter extends ArrayAdapter<Actualite> {
         return convertView;
     }
 
+    public boolean contains(Actualite actualite) {
+        for (int i = 0; i < this.getCount(); i++) {
+            if (this.getItem(i).equals(actualite)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private class ActualiteViewHolder {
         public TextView titre;
         public TextView source;
