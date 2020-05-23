@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,11 +44,11 @@ public class ActualitesMeteoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_actualites_meteo, container, false);
 
-
-        actualite_meteo_lat_value = view.findViewById(R.id.actualite_meteo_lat_value);
-        actualite_meteo_long_value = view.findViewById(R.id.actualite_meteo_long_value);
-        actualite_meteo_bouton = view.findViewById(R.id.actualite_meteo_bouton);
-        ((MainActivity)getActivity()).requestLocation(actualite_meteo_lat_value, actualite_meteo_long_value);
+        TextView view_meteo_ville = view.findViewById(R.id.meteo_ville);
+        ImageView view_meteo_image = view.findViewById(R.id.meteo_image);
+        TextView view_meteo_temperature = view.findViewById(R.id.meteo_temperature);
+        TextView view_meteo_description = view.findViewById(R.id.meteo_description);
+        ((MainActivity)getActivity()).requestLocation(view_meteo_ville, view_meteo_image, view_meteo_temperature, view_meteo_description);
         return view;
     }
 

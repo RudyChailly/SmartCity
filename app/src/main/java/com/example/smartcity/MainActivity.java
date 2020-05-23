@@ -18,11 +18,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.smartcity.models.Utilisateur;
 import com.example.smartcity.models.actualite.ActualiteAdapter;
+import com.example.smartcity.models.actualite.meteo.Meteo;
 import com.example.smartcity.models.commerce.CommerceAdapter;
 import com.example.smartcity.models.commerce.offre.OffreAdapter;
 import com.example.smartcity.models.groupe.Groupe;
@@ -59,6 +67,10 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +96,13 @@ public class MainActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
     Location currentLocation;
-    TextView latitude_text, longitude_text;
+    TextView view_meteo_ville, view_meteo_temperature, view_meteo_description ;
+    ImageView view_meteo_image;
+    private static final String  METEO_API_URL = "https://api.weatherbit.io/v2.0/current?";
+    private static final String  METEO_API_KEY = "917505d4cbd4452cbf041818779d6a80";
+
+    Meteo meteo;
+
     private static DatabaseReference
             referenceActualites,
             referenceInterets,
@@ -123,43 +141,74 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /******************************************** METEO ********************************************/
-    public void requestLocation(TextView latitude_text, TextView longitude_text) {
-        this.latitude_text = latitude_text;
-        this.longitude_text = longitude_text;
-        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            getLocation();
+    public void requestMeteo() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = METEO_API_URL+"lat="+latitude+"&lon="+longitude+"&key="+METEO_API_KEY;
+        Log.d("URL", url);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonMeteo = new JSONObject(response).getJSONArray("data").getJSONObject(0);
+                            String meteo_ville = jsonMeteo.getString("city_name");
+                            int meteo_temperature = jsonMeteo.getInt("temp");
+                            String meteo_code = jsonMeteo.getJSONObject("weather").getString("code");
+                            meteo = new Meteo(getResources(), getPackageName(), meteo_temperature, meteo_ville, meteo_code);
+
+                            affichageMeteo();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {}
+                });
+
+        queue.add(stringRequest);
+    }
+
+    public void affichageMeteo() {
+        if (meteo != null) {
+            view_meteo_ville.setText(meteo.getVille());
+            view_meteo_description.setText(meteo.getDescription());
+            view_meteo_temperature.setText(meteo.getTemperature() + " °C");
+        }
+    }
+
+    public void requestLocation(TextView view_meteo_ville, ImageView view_meteo_image, TextView view_meteo_temperature, TextView view_meteo_description) {
+        this.view_meteo_ville = view_meteo_ville;
+        this.view_meteo_image = view_meteo_image;
+        this.view_meteo_temperature = view_meteo_temperature;
+        this.view_meteo_description = view_meteo_description;
+        if (meteo != null) {
+            affichageMeteo();
         }
         else {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                getLocation();
+            }
+            else {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+            }
         }
     }
 
     private void getLocation() {
-        /*locationRequest = new LocationRequest();
-        locationRequest.setInterval(120000); // two minute interval
-        locationRequest.setFastestInterval(120000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        Intent locationIntent = new Intent(getApplicationContext(), MainActivity.class);
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, PendingIntent.getService(this, 0, locationIntent, PendingIntent.FLAG_UPDATE_CURRENT));*/
         fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
                 Location location = task.getResult();
                 if (location != null) {
                     Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
-                    latitude_text.setText(location.getLatitude()+"");
-                    longitude_text.setText(location.getLongitude()+"");
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                    requestMeteo();
                 }
             }
         });
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
     }
 
     /******************************************** UTILISATEURS ********************************************/
