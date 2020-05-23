@@ -1,9 +1,19 @@
 package com.example.smartcity;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.smartcity.models.Utilisateur;
 import com.example.smartcity.models.actualite.ActualiteAdapter;
@@ -28,7 +38,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -52,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static Utilisateur utilisateur;
 
+    private LocationManager locationManager;
+    private double latitude, longitude;
+
     private static DatabaseReference
             referenceActualites,
             referenceInterets,
@@ -66,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         setReferences(database);
 
@@ -82,6 +100,83 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    /******************************************** METEO ********************************************/
+    public void requestLocation() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            OnGPS();
+        }
+        else {
+            Log.d("GETLOCATION", "OUI");
+            getLocation();
+        }
+    }
+
+    public void OnGPS() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Enable GPS").setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    public void getLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        else {
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+            }
+            else {
+
+               /* Log.d("GPS_PROVIDER", "NON");
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if (location != null) {
+                    double lat = location.getLatitude();
+                    double longi = location.getLongitude();
+                    actualite_meteo_lat_value.setText(lat + "");
+                    actualite_meteo_long_value.setText(longi + "");
+                }
+                else {
+                    Log.d("NETWORK_PROVIDER", "NON");
+                    location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+                    if (location != null) {
+                        double lat = location.getLatitude();
+                        double longi = location.getLongitude();
+                        actualite_meteo_lat_value.setText(lat + "");
+                        actualite_meteo_long_value.setText(longi + "");
+                    }
+                    else {
+                        Log.d("PASSIVE_PROVIDER", "NON");*/
+                Toast.makeText(this, "Impossible de trouver la location", Toast.LENGTH_SHORT).show();
+            }
+        }
+            /*}
+        }*/
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     /******************************************** UTILISATEURS ********************************************/
