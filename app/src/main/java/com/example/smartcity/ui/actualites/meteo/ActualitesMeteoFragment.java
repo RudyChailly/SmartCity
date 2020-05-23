@@ -47,14 +47,7 @@ public class ActualitesMeteoFragment extends Fragment {
         actualite_meteo_lat_value = view.findViewById(R.id.actualite_meteo_lat_value);
         actualite_meteo_long_value = view.findViewById(R.id.actualite_meteo_long_value);
         actualite_meteo_bouton = view.findViewById(R.id.actualite_meteo_bouton);
-        actualite_meteo_bouton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainActivity)getActivity()).requestLocation();
-                actualite_meteo_lat_value.setText(((MainActivity)getActivity()).getLatitude() + "");
-                actualite_meteo_long_value.setText(((MainActivity)getActivity()).getLongitude() + "");
-            }
-        });
+        ((MainActivity)getActivity()).requestLocation(actualite_meteo_lat_value, actualite_meteo_long_value);
         return view;
     }
 

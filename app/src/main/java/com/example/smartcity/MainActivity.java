@@ -1,17 +1,23 @@
 package com.example.smartcity;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +34,13 @@ import com.example.smartcity.models.Ville;
 import com.example.smartcity.models.groupe.GroupeAdapter;
 import com.example.smartcity.ui.demarrage.Demarrage;
 import com.example.smartcity.ui.demarrage.Interets;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,6 +61,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,7 +81,10 @@ public class MainActivity extends AppCompatActivity {
 
     private LocationManager locationManager;
     private double latitude, longitude;
-
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    LocationRequest locationRequest;
+    Location currentLocation;
+    TextView latitude_text, longitude_text;
     private static DatabaseReference
             referenceActualites,
             referenceInterets,
@@ -90,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         setAdapters();
 
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
         // Verifie que l'utilisateur est connecte
         if (firebaseUser != null) {
             // Verifie que l'utilisateur a au moins un centre d'interet
@@ -103,72 +123,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /******************************************** METEO ********************************************/
-    public void requestLocation() {
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            OnGPS();
-        }
-        else {
-            Log.d("GETLOCATION", "OUI");
+    public void requestLocation(TextView latitude_text, TextView longitude_text) {
+        this.latitude_text = latitude_text;
+        this.longitude_text = longitude_text;
+        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             getLocation();
         }
+        else {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+        }
     }
 
-    public void OnGPS() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Enable GPS").setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+    private void getLocation() {
+        /*locationRequest = new LocationRequest();
+        locationRequest.setInterval(120000); // two minute interval
+        locationRequest.setFastestInterval(120000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        Intent locationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, PendingIntent.getService(this, 0, locationIntent, PendingIntent.FLAG_UPDATE_CURRENT));*/
+        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-            }
-        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+            public void onComplete(@NonNull Task<Location> task) {
+                Location location = task.getResult();
+                if (location != null) {
+                    Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+                    latitude_text.setText(location.getLatitude()+"");
+                    longitude_text.setText(location.getLongitude()+"");
+                }
             }
         });
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
-    public void getLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
-        else {
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (location != null) {
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-            }
-            else {
-
-               /* Log.d("GPS_PROVIDER", "NON");
-                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                if (location != null) {
-                    double lat = location.getLatitude();
-                    double longi = location.getLongitude();
-                    actualite_meteo_lat_value.setText(lat + "");
-                    actualite_meteo_long_value.setText(longi + "");
-                }
-                else {
-                    Log.d("NETWORK_PROVIDER", "NON");
-                    location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-                    if (location != null) {
-                        double lat = location.getLatitude();
-                        double longi = location.getLongitude();
-                        actualite_meteo_lat_value.setText(lat + "");
-                        actualite_meteo_long_value.setText(longi + "");
-                    }
-                    else {
-                        Log.d("PASSIVE_PROVIDER", "NON");*/
-                Toast.makeText(this, "Impossible de trouver la location", Toast.LENGTH_SHORT).show();
-            }
-        }
-            /*}
-        }*/
     }
 
     public double getLatitude() {
@@ -537,5 +520,4 @@ public class MainActivity extends AppCompatActivity {
         requestGroupesInteret();
         groupeInteretsAdapter.notifyDataSetChanged();
     }
-
 }
