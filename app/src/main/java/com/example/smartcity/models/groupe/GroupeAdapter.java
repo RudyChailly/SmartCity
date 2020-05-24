@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +16,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
 import com.example.smartcity.ui.chat.messages.MessageActivity;
 
 import java.io.Serializable;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class GroupeAdapter extends ArrayAdapter<Groupe> {
 
@@ -36,12 +41,18 @@ public class GroupeAdapter extends ArrayAdapter<Groupe> {
         GroupeViewHolder viewHolder = (GroupeViewHolder) convertView.getTag();
         if (viewHolder == null) {
             viewHolder = new GroupeViewHolder();
-            viewHolder.nom = (TextView)convertView.findViewById(R.id.groupe_nom);
-            viewHolder.interet = (TextView)convertView.findViewById(R.id.groupe_interet);
-            viewHolder.rejoint = (ImageView) convertView.findViewById(R.id.groupe_rejoint);
-            viewHolder.description = (TextView)convertView.findViewById(R.id.groupe_description);
+            viewHolder.nom = convertView.findViewById(R.id.groupe_nom);
+            viewHolder.interet = convertView.findViewById(R.id.groupe_interet);
+            viewHolder.rejoint =  convertView.findViewById(R.id.groupe_rejoint);
+            viewHolder.description = convertView.findViewById(R.id.groupe_description);
+            viewHolder.image = convertView.findViewById(R.id.groupe_image);
         }
         final Groupe groupe = getItem(position);
+        Log.d(groupe.getNom(), "-"+groupe.getDescription());
+
+        if (groupe.getImageURL() != null) {
+            Glide.with(getContext()).load(groupe.getImageURL()).into(viewHolder.image);
+        }
         viewHolder.nom.setText(groupe.getNom());
         if (groupe.getInteret() != null) {
             viewHolder.interet.setText(groupe.getInteret().toString());
@@ -117,6 +128,7 @@ public class GroupeAdapter extends ArrayAdapter<Groupe> {
 
     private class GroupeViewHolder {
         public TextView nom;
+        public ImageView image;
         public TextView ville;
         public TextView interet;
         public TextView description;

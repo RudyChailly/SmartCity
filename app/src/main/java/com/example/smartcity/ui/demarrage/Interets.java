@@ -6,10 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.GridView;
 
+import com.bumptech.glide.Glide;
 import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
 import com.example.smartcity.models.Interet.Interet;
@@ -20,6 +22,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -44,7 +48,6 @@ public class Interets extends AppCompatActivity {
         requestInterets();
         gridView_interets = findViewById(R.id.liste_interets);
         gridView_interets.setAdapter(interetAdapter);
-
         idInteretsSelectionnes = new ArrayList<>();
         /*if (getIntent() != null && getIntent().hasExtra("idInteretsSelectionnes")) {
             ArrayList<String> idInteretsUtilisateur = getIntent().getStringArrayListExtra("idInteretsSelectionnes");
@@ -62,7 +65,7 @@ public class Interets extends AppCompatActivity {
 
     public void requestInterets() {
         if (interetAdapter.getCount() == 0) {
-            referenceInterets.addListenerForSingleValueEvent(new ValueEventListener() {
+            referenceInterets.orderByChild("nom").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {

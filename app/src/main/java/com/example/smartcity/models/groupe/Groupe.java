@@ -12,6 +12,15 @@ public class Groupe {
 
     private String idVille;
     private Ville ville;
+    private String imageURL;
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
 
     public String getDescription() {
         return description;

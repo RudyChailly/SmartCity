@@ -48,7 +48,7 @@ public class ActualitesMeteoFragment extends Fragment {
         ImageView view_meteo_image = view.findViewById(R.id.meteo_image);
         TextView view_meteo_temperature = view.findViewById(R.id.meteo_temperature);
         TextView view_meteo_description = view.findViewById(R.id.meteo_description);
-        ((MainActivity)getActivity()).requestLocation(view_meteo_ville, view_meteo_image, view_meteo_temperature, view_meteo_description);
+        //((MainActivity)getActivity()).requestLocation(view_meteo_ville, view_meteo_image, view_meteo_temperature, view_meteo_description);
         return view;
     }
 

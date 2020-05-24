@@ -33,8 +33,14 @@
     android:padding="16dp"
     android:background="@color/background">
 
+    <ImageView
+        android:id="@+id/creation_groupe_image"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:src="@drawable/placeholder_600"/>
+
     <EditText
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/creation_groupe_nom"

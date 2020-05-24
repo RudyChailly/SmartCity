@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 public class Interet {
 
-    private String id, nom;
+    private String id, nom, imageURL;
 
     public Interet(){}
 
@@ -13,8 +13,20 @@ public class Interet {
         this.id = id;
     }
 
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
     public String getId() {
         return id;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     public String getNom() {

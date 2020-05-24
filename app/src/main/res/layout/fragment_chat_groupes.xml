@@ -21,13 +21,11 @@
                 android:id="@+id/liste_groupes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/background"
-                android:clipToPadding="false"
                 android:orientation="vertical"
+                android:textSize="30dp"
+                android:background="@color/background"
                 android:paddingBottom="15dp"
-                android:textSize="30dp">
-
-            </ListView>
+                android:clipToPadding="false"/>
 
         </LinearLayout>
 
