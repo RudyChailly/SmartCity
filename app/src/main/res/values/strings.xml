@@ -90,4 +90,5 @@
     <string name="meteo_description_803">Broken clouds</string>
     <string name="meteo_description_804">Overcast clouds</string>
     <string name="meteo_description_805">Unknown Precipitation</string>
+    <string name="profil">profile</string>
 </resources>

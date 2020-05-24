@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.smartcity.models.Interet.Interet;
+import com.example.smartcity.ui.EditionProfilActivity;
 import com.example.smartcity.ui.demarrage.Demarrage;
 import com.example.smartcity.ui.demarrage.Interets;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -30,6 +31,16 @@ public class ParametresBottomSheetDialog extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.modal_parametres, container, false);
+        TextView parametres_bouton_profile = view.findViewById(R.id.parametres_bouton_profil);
+        parametres_bouton_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent profilIntent = new Intent(getContext(), EditionProfilActivity.class);
+                startActivity(profilIntent);
+                dismiss();
+            }
+        });
+
         TextView parametres_bouton_interets = view.findViewById(R.id.parametres_bouton_interets);
         parametres_bouton_interets.setOnClickListener(new View.OnClickListener() {
             @Override

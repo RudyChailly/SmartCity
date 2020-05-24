@@ -35,30 +35,44 @@ public class GroupeAdapter extends ArrayAdapter<Groupe> {
     }
 
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        GroupeViewHolder viewHolder;
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.groupe, parent, false);
-        }
-        GroupeViewHolder viewHolder = (GroupeViewHolder) convertView.getTag();
-        if (viewHolder == null) {
             viewHolder = new GroupeViewHolder();
             viewHolder.nom = convertView.findViewById(R.id.groupe_nom);
             viewHolder.interet = convertView.findViewById(R.id.groupe_interet);
             viewHolder.rejoint =  convertView.findViewById(R.id.groupe_rejoint);
             viewHolder.description = convertView.findViewById(R.id.groupe_description);
             viewHolder.image = convertView.findViewById(R.id.groupe_image);
+            convertView.setTag(viewHolder);
         }
+        else {
+            viewHolder = (GroupeViewHolder) convertView.getTag();
+        }
+        viewHolder.image.setImageResource(R.drawable.placeholder_600);
         final Groupe groupe = getItem(position);
         Log.d(groupe.getNom(), "-"+groupe.getDescription());
 
         if (groupe.getImageURL() != null) {
             Glide.with(getContext()).load(groupe.getImageURL()).into(viewHolder.image);
         }
-        viewHolder.nom.setText(groupe.getNom());
+        else {
+            viewHolder.image.setImageResource(R.drawable.placeholder_group);
+        }
+        if (groupe.getNom() != null) {
+            viewHolder.nom.setText(groupe.getNom());
+        }
+        else {
+            viewHolder.nom.setText("");
+        }
         if (groupe.getInteret() != null) {
             viewHolder.interet.setText(groupe.getInteret().toString());
         }
         if (groupe.getDescription() != null && groupe.getDescription().length() > 0) {
             viewHolder.description.setText(groupe.getDescription());
+        }
+        else {
+            viewHolder.description.setText("");
         }
         if (groupe.estRejoint()) {
             convertView.setOnClickListener(new View.OnClickListener() {

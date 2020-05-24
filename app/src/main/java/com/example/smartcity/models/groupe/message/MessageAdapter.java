@@ -4,11 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.smartcity.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -50,6 +52,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         if (holder.utilisateur != null && message.getUtilisateur() != null) {
             holder.utilisateur.setText(message.getUtilisateur().toString());
         }
+        if (holder.image != null && message.getUtilisateur().getImageURL() != null) {
+            Glide.with(context).load(message.getUtilisateur().getImageURL()).into(holder.image);
+        }
     }
 
     @Override
@@ -71,11 +76,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView contenu;
         public TextView utilisateur;
+        public ImageView image;
 
         public ViewHolder(View itemView) {
             super(itemView);
             contenu = itemView.findViewById(R.id.message_contenu);
             utilisateur = itemView.findViewById(R.id.message_utilisateur);
+            image = itemView.findViewById(R.id.message_utilisateur_image);
         }
     }
 

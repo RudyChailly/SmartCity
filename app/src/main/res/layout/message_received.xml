@@ -12,6 +12,23 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content">
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/message_utilisateur_image"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/placeholder_user"
+            app:civ_border_width="2dp"
+            app:civ_border_color="@color/blue"
+            />
+
+        <LinearLayout
+            android:paddingLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_toRightOf="@+id/message_utilisateur_image">
+
         <TextView
             android:id="@+id/message_utilisateur"
             android:layout_width="wrap_content"
@@ -27,8 +44,9 @@
             android:padding="8dp"
             android:textSize="14dp"
             android:textColor="@color/grey"
-            android:text="TEXT"
-            android:layout_below="@+id/message_utilisateur"/>
+            android:text="TEXT"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

@@ -1,16 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Tabs">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minHeight="?actionBarSize"
+            android:padding="@dimen/appbar_padding"
+            android:text="@string/profil"
+            android:textAllCaps="true"
+            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:background="@color/background">
-        
+        android:background="@color/background"
+        android:padding="16dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/edition_image"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:src="@drawable/placeholder_user"
+            app:civ_border_width="2dp"
+            app:civ_border_color="@color/blue"
+            android:layout_marginBottom="20dp"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/edition_email"
+            android:hint="@string/email"
+            android:background="@drawable/rounded_8"
+            android:backgroundTint="#bbb"
+            android:padding="12dp"
+            android:textSize="16dp"
+            android:focusable="false"
+            android:textColor="@color/grey"
+            android:layout_marginBottom="20dp"/>
+
         <EditText
             android:layout_marginTop="4dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/inscription_nom"
+            android:id="@+id/edition_nom"
             android:hint="@string/nom"
             android:background="@drawable/rounded_8"
             android:padding="12dp"
@@ -21,7 +67,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/inscription_prenom"
+            android:id="@+id/edition_prenom"
             android:hint="@string/prenom"
             android:background="@drawable/rounded_8"
             android:padding="12dp"
@@ -29,40 +75,6 @@
             android:textColor="@color/grey"
             android:layout_marginBottom="20dp"/>
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/inscription_email"
-            android:hint="@string/email"
-            android:background="@drawable/rounded_8"
-            android:padding="12dp"
-            android:textSize="16dp"
-            android:textColor="@color/grey"
-            android:layout_marginBottom="20dp"/>
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/inscription_password"
-            android:hint="@string/mot_de_passe"
-            android:background="@drawable/rounded_8"
-            android:padding="12dp"
-            android:textSize="16dp"
-            android:inputType="textPassword"
-            android:textColor="@color/grey"
-            android:layout_marginBottom="20dp"/>
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/inscription_confirm_password"
-            android:hint="@string/confirmer_mot_de_passe"
-            android:background="@drawable/rounded_8"
-            android:padding="12dp"
-            android:textSize="16dp"
-            android:inputType="textPassword"
-            android:textColor="@color/grey"
-            android:layout_marginBottom="20dp"/>
 
 
         <Button
@@ -70,7 +82,7 @@
             android:textSize="16dp"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:id="@+id/inscription_envoyer"
+            android:id="@+id/edition_valider"
             android:text="@string/valider"
             android:textColor="@color/white"
             android:textStyle="bold"
@@ -78,3 +90,5 @@
             android:backgroundTint="@color/blue"/>
 
     </LinearLayout>
+
+</LinearLayout>

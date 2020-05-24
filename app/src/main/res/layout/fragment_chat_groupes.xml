@@ -24,7 +24,7 @@
                 android:orientation="vertical"
                 android:textSize="30dp"
                 android:background="@color/background"
-                android:paddingBottom="15dp"
+                android:paddingBottom="50dp"
                 android:clipToPadding="false"/>
 
         </LinearLayout>

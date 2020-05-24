@@ -8,8 +8,17 @@ import java.util.ArrayList;
 
 public class Utilisateur {
 
-    private String id, nom, prenom, email;
+    private String id, nom, prenom, email, imageURL;
     private String idVille;
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
     private ArrayList<String> idCommerces;
     private ArrayList<String> idInterets;
     private ArrayList<String> idGroupes;

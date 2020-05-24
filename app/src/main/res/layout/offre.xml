@@ -11,15 +11,21 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="5dp"
         android:layout_weight="4">
 
         <ImageView
             android:id="@+id/offre_image"
-            android:layout_width="fill_parent"
+            android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/placeholder_600"/>
+            android:src="@drawable/placeholder_offre"/>
+
+    </LinearLayout>
 
     </LinearLayout>
 
@@ -37,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="24dp"
-            android:text=""
+            android:text="Offre"
             android:textColor="#000"
             android:textStyle="bold"
             />
@@ -47,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16dp"
-            android:text=""
+            android:text="Description"
             android:textStyle="italic"
             android:textColor="#313131"
             />
@@ -58,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="16dp"
-            android:text=""
+            android:text="Commerce"
             android:textColor="#000"
             />
 
