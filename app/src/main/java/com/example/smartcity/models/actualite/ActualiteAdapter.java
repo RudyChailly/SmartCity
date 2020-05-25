@@ -5,12 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.smartcity.R;
 
 import java.util.List;
@@ -31,8 +33,12 @@ public class ActualiteAdapter extends ArrayAdapter<Actualite> {
             viewHolder.titre = (TextView)convertView.findViewById(R.id.actualite_titre);
             viewHolder.source = (TextView)convertView.findViewById(R.id.actualite_source);
             viewHolder.interet = (TextView)convertView.findViewById(R.id.actualite_interet);
+            viewHolder.image = convertView.findViewById(R.id.actualite_image);
         }
         Actualite actualite = getItem(position);
+        if (actualite.getImageURL() != null) {
+            Glide.with(getContext()).load(actualite.getImageURL()).into(viewHolder.image);
+        }
         viewHolder.titre.setText(actualite.getTitre());
         viewHolder.source.setText(actualite.getSource());
         if (actualite.getInteret() != null) {
@@ -54,5 +60,6 @@ public class ActualiteAdapter extends ArrayAdapter<Actualite> {
         public TextView titre;
         public TextView source;
         public TextView interet;
+        public ImageView image;
     }
 }

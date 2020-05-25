@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
 import com.example.smartcity.models.actualite.Actualite;
@@ -40,15 +41,19 @@ public class CommerceAdapter  extends ArrayAdapter<Commerce> {
         CommerceViewHolder viewHolder = (CommerceViewHolder) convertView.getTag();
         if (viewHolder == null) {
             viewHolder = new CommerceViewHolder();
-            viewHolder.nom = (TextView)convertView.findViewById(R.id.commerce_nom);
-            viewHolder.interet = (TextView)convertView.findViewById(R.id.commerce_interet);
-            viewHolder.ville = (TextView) convertView.findViewById(R.id.commerce_ville);
-            viewHolder.abonne = (ImageView) convertView.findViewById(R.id.commerce_abonne);
+            viewHolder.nom = convertView.findViewById(R.id.commerce_nom);
+            viewHolder.interet = convertView.findViewById(R.id.commerce_interet);
+            viewHolder.ville =  convertView.findViewById(R.id.commerce_ville);
+            viewHolder.abonne = convertView.findViewById(R.id.commerce_abonne);
+            viewHolder.image = convertView.findViewById(R.id.commerce_image);
         }
         final Commerce commerce = getItem(position);
         viewHolder.nom.setText(commerce.getNom());
         if (commerce.getInteret() != null) {
             viewHolder.interet.setText(commerce.getInteret().toString());
+        }
+        if (commerce.getImageURL() != null) {
+            Glide.with(getContext()).load(commerce.getImageURL()).into(viewHolder.image);
         }
         if (commerce.getVille() != null) {
             viewHolder.ville.setText(commerce.getVille().toString());
@@ -108,6 +113,7 @@ public class CommerceAdapter  extends ArrayAdapter<Commerce> {
 
     private class CommerceViewHolder {
         public TextView nom;
+        public ImageView image;
         public TextView interet;
         public TextView ville;
         public ImageView abonne;

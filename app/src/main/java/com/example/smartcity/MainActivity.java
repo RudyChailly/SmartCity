@@ -326,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
     /******************************************** COMMERCES ********************************************/
     public static void requestCommercesUtilisateur() {
         if (commerceAdapter.getCount() == 0 && commercesUtilisateur.size() == 0) {
-            referenceCommerces.addListenerForSingleValueEvent(new ValueEventListener() {
+            referenceCommerces.orderByChild("nom").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshotCommerces) {
                     for (final DataSnapshot snapshotCommerce : dataSnapshotCommerces.getChildren()) {
@@ -459,7 +459,7 @@ public class MainActivity extends AppCompatActivity {
     /******************************************** GROUPES ********************************************/
     public static void requestGroupesUtilisateur() {
         if (groupeUtilisateurAdapter.getCount() == 0 && groupesUtilisateur.size() == 0) {
-            referenceGroupes.addListenerForSingleValueEvent(new ValueEventListener() {
+            referenceGroupes.orderByChild("nom").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -503,7 +503,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public static void requestGroupesInteret() {
         if (groupeInteretsAdapter.getCount() == 0 && groupesInterets.size() == 0) {
-            referenceGroupes.addListenerForSingleValueEvent(new ValueEventListener() {
+            referenceGroupes.orderByChild("nom").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {

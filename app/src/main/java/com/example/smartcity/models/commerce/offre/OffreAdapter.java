@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.example.smartcity.R;
 import com.example.smartcity.models.commerce.Commerce;
 
@@ -31,17 +32,20 @@ public class OffreAdapter extends ArrayAdapter<Offre> {
         OffreViewHolder viewHolder = (OffreViewHolder) convertView.getTag();
         if (viewHolder == null) {
             viewHolder = new OffreViewHolder();
-            viewHolder.intitule = (TextView)convertView.findViewById(R.id.offre_intitule);
-            viewHolder.description = (TextView)convertView.findViewById(R.id.offre_description);
-            viewHolder.commerce = (TextView) convertView.findViewById(R.id.offre_commerce);
-            viewHolder.prix = (TextView) convertView.findViewById(R.id.offre_prix);
-            viewHolder.image = (ImageView) convertView.findViewById(R.id.offre_image);
+            viewHolder.intitule = convertView.findViewById(R.id.offre_intitule);
+            viewHolder.description = convertView.findViewById(R.id.offre_description);
+            viewHolder.commerce =  convertView.findViewById(R.id.offre_commerce);
+            viewHolder.prix =  convertView.findViewById(R.id.offre_prix);
+            viewHolder.image =  convertView.findViewById(R.id.offre_image);
         }
         Offre offre = getItem(position);
         viewHolder.intitule.setText(offre.getIntituleCourt());
         viewHolder.description.setText(offre.getDescription());
         if (offre.getCommerce() != null) {
             viewHolder.commerce.setText(offre.getCommerce().getNom());
+        }
+        if (offre.getImageURL() != null) {
+            Glide.with(getContext()).load(offre.getImageURL()).into(viewHolder.image);
         }
         viewHolder.prix.setText(offre.getPrix()+" €");
 

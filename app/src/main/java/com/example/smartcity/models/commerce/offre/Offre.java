@@ -14,6 +14,15 @@ public class Offre implements Serializable {
     private double prix;
     private String idCommerce;
     private Commerce commerce;
+    String imageURL;
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
 
     public Offre(){}
 

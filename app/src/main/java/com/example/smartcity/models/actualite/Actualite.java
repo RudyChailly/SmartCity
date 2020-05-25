@@ -29,6 +29,16 @@ public class Actualite implements Serializable {
     private Interet interet;
     private String idInteret;
 
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    String imageURL;
+
     public String getId() {
         return id;
     }
