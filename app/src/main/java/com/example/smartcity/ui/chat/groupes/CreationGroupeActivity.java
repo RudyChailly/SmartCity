@@ -1,12 +1,7 @@
 package com.example.smartcity.ui.chat.groupes;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -15,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
@@ -30,15 +24,8 @@ import com.example.smartcity.R;
 import com.example.smartcity.models.Interet.Interet;
 import com.example.smartcity.models.Utilisateur;
 import com.example.smartcity.models.groupe.Groupe;
-import com.example.smartcity.ui.demarrage.Interets;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,20 +38,25 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-public class CreationGroupe extends AppCompatActivity {
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class CreationGroupeActivity extends AppCompatActivity {
 
     DatabaseReference referenceInterets, referenceGroupes, referenceUtilisateurs;
     Interet interetSelectionne;
 
-    private Utilisateur utilisateur;
+    EditText creation_groupe_nom, creation_groupe_description;
+    Spinner creation_groupe_interet;
+    CircleImageView creation_groupe_image;
+    String nom_value, description_value;
+    ArrayList liste_interets;
+    ArrayAdapter<Interet> adapter;
 
     StorageReference storageReference;
-    private static final int IMAGE_REQUEST = 1;
-    private Uri imageUri;
-    private StorageTask uploadTask;
-    ImageView creation_groupe_image;
+    static final int IMAGE_REQUEST = 1;
+    Uri imageUri;
+    StorageTask uploadTask;
     String uploadImageUri;
 
     @Override
@@ -72,14 +64,23 @@ public class CreationGroupe extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creation_groupe);
 
-        final ArrayList<Interet> liste_interets = new ArrayList<>();
-        final ArrayAdapter<Interet> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, liste_interets);
+        liste_interets = new ArrayList<Interet>();
+        adapter  = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, liste_interets);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        final Spinner spinner_interets = findViewById(R.id.creation_groupe_interet);
         storageReference = FirebaseStorage.getInstance().getReference("Groupes");
-        spinner_interets.setAdapter(adapter);
-        spinner_interets.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        creation_groupe_nom = findViewById(R.id.creation_groupe_nom);
+        creation_groupe_description = findViewById(R.id.creation_groupe_description);
+        creation_groupe_image = findViewById(R.id.creation_groupe_image);
+        creation_groupe_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageChooser();
+            }
+        });
+        creation_groupe_interet = findViewById(R.id.creation_groupe_interet);
+        creation_groupe_interet.setAdapter(adapter);
+        creation_groupe_interet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 interetSelectionne = adapter.getItem(position);
@@ -88,26 +89,55 @@ public class CreationGroupe extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("nom_value")) {
+                nom_value = savedInstanceState.getString("nom_value");
+                creation_groupe_nom.setText(nom_value);
+            }
+            if (savedInstanceState.containsKey("description_value")) {
+                description_value = savedInstanceState.getString("description_value");
+                creation_groupe_description.setText(description_value);
+            }
+            if (savedInstanceState.containsKey("liste_interets")) {
+                liste_interets.addAll(savedInstanceState.getParcelableArrayList("liste_interets"));
+                adapter.notifyDataSetChanged();
+                if (savedInstanceState.containsKey("interetSelectionne")) {
+                    interetSelectionne = (Interet) savedInstanceState.getSerializable("interetSelectionne");
+                    int position = adapter.getPosition(interetSelectionne);
+                    creation_groupe_interet.setSelection(position);
+                }
+            }
+            if (savedInstanceState.containsKey("imageUri")) {
+                imageUri = savedInstanceState.getParcelable("imageUri");
+                creation_groupe_image.setImageURI(imageUri);
+            }
+            if (savedInstanceState.containsKey("uploadImageUri")) {
+                uploadImageUri = savedInstanceState.getString("uploadImageUri");
+            }
+        }
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         referenceInterets = database.getReference("Interets");
         referenceGroupes = database.getReference("Groupes");
         referenceUtilisateurs = database.getReference("Utilisateurs");
-        referenceInterets.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Interet interet = snapshot.getValue(Interet.class);
-                    interet.setId(snapshot.getKey());
-                    if (MainActivity.getUtilisateur().getIdInterets().contains(interet.getId())) {
-                        liste_interets.add(interet);
-                        adapter.notifyDataSetChanged();
+        if (liste_interets.size() == 0) {
+            referenceInterets.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Interet interet = snapshot.getValue(Interet.class);
+                        interet.setId(snapshot.getKey());
+                        if (MainActivity.getUtilisateur().getIdInterets().contains(interet.getId())) {
+                            liste_interets.add(interet);
+                            adapter.notifyDataSetChanged();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {}
+            });
+        }
 
         findViewById(R.id.creation_groupe_valider).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,14 +146,29 @@ public class CreationGroupe extends AppCompatActivity {
                 valider();
             }
         });
-        creation_groupe_image =  findViewById(R.id.creation_groupe_image);
-        creation_groupe_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageChooser();
-            }
-        });
+    }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        if (creation_groupe_nom != null) {
+            savedInstanceState.putString("nom_value", creation_groupe_nom.getText().toString());
+        }
+        if (creation_groupe_description != null) {
+            savedInstanceState.putString("description_value", creation_groupe_description.getText().toString());
+        }
+        if (liste_interets != null) {
+            savedInstanceState.putParcelableArrayList("liste_interets",liste_interets);
+            if (interetSelectionne != null) {
+                savedInstanceState.putSerializable("interetSelectionne", interetSelectionne);
+            }
+        }
+        if (imageUri != null) {
+            savedInstanceState.putParcelable("imageUri", imageUri);
+        }
+        if (uploadImageUri != null) {
+            savedInstanceState.putString("uploadImageUri", uploadImageUri);
+        }
     }
 
     private void imageChooser() {
@@ -139,10 +184,7 @@ public class CreationGroupe extends AppCompatActivity {
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
             creation_groupe_image.setImageURI(imageUri);
-            if (uploadTask != null && uploadTask.isInProgress()) {
-                Toast.makeText(this, "Upload en cours", Toast.LENGTH_SHORT).show();
-            }
-            else {
+            if (!(uploadTask != null && uploadTask.isInProgress())) {
                 uploadImage();
             }
         }
@@ -157,6 +199,9 @@ public class CreationGroupe extends AppCompatActivity {
             }
             else if (nomValue.length() < 3) {
                 showDialogError(getResources().getString(R.string.message_nom_groupe_trop_court));
+            }
+            else if (descriptionValue.length() < 5) {
+                showDialogError(getResources().getString(R.string.message_description_trop_court));
             }
             else if (descriptionValue.length() > 20) {
                 showDialogError(getResources().getString(R.string.message_description_trop_long));
@@ -192,13 +237,11 @@ public class CreationGroupe extends AppCompatActivity {
                                 MainActivity.requestGroupeRejoindre(groupe);
                                 finish();
                             }
-
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
                             }
                         });
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                     }
@@ -227,7 +270,7 @@ public class CreationGroupe extends AppCompatActivity {
 
     private void uploadImage() {
         final ProgressDialog pd = new ProgressDialog(this);
-        pd.setMessage("Uploading");
+        pd.setMessage(getResources().getString(R.string.Chargement));
         pd.show();
 
         if (imageUri != null) {
@@ -235,7 +278,6 @@ public class CreationGroupe extends AppCompatActivity {
             fileReference.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(CreationGroupe.this, "Image chargée", Toast.LENGTH_SHORT).show();
                     fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
@@ -247,7 +289,6 @@ public class CreationGroupe extends AppCompatActivity {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(CreationGroupe.this, "ERREUR", Toast.LENGTH_SHORT).show();
                     pd.dismiss();
                 }
             });

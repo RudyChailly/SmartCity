@@ -49,22 +49,20 @@ import retrofit2.Response;
 public class MessageActivity extends AppCompatActivity {
 
     String idGroupe, nomGroupe;
-    EditText messageChamps;
-    ImageButton messageBouton;
+    EditText message_contenu;
+    ImageButton message_envoyer;
 
     DatabaseReference referenceUtilisateurs, referenceMessages;
 
     MessageAdapter messageAdapter;
-    ArrayList<Message> messages;
+    ArrayList messages;
 
     RecyclerView recyclerView;
     Intent intent;
 
     APIService apiService;
 
-    HashMap<String, Utilisateur> utilisateursNomPrenom;
-
-    boolean notify = false;
+    HashMap<String, Utilisateur> utilisateurs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,47 +82,64 @@ public class MessageActivity extends AppCompatActivity {
         nomGroupe = intent.getStringExtra("nomGroupe");
         ((TextView) findViewById(R.id.toolbar_title)).setText(nomGroupe);
 
-        messageChamps = findViewById(R.id.message_champs);
-        messageBouton = findViewById(R.id.message_bouton);
+        message_contenu = findViewById(R.id.message_contenu);
+        message_envoyer = findViewById(R.id.message_envoyer);
 
-        messageBouton.setOnClickListener(new View.OnClickListener() {
+        message_envoyer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                notify = true;
-                String contenu = messageChamps.getText().toString();
+                String contenu = message_contenu.getText().toString();
                 if (!(contenu.equals(""))) {
                     envoyerMessage(contenu);
                 }
                 else {
                     Toast.makeText(MessageActivity.this, "You can't send empty message.", Toast.LENGTH_SHORT).show();
                 }
-                messageChamps.setText("");
+                message_contenu.setText("");
             }
         });
 
         referenceUtilisateurs = FirebaseDatabase.getInstance().getReference("Utilisateurs");
         referenceMessages = FirebaseDatabase.getInstance().getReference("Messages");
-        utilisateursNomPrenom  = new HashMap<>();
-        referenceUtilisateurs.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Utilisateur utilisateur = snapshot.getValue(Utilisateur.class);
-                    if (utilisateur.aRejoint(idGroupe)) {
-                        Log.d("Utilisateur", utilisateur.toString());
-                        utilisateursNomPrenom.put(utilisateur.getId(), utilisateur);
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("message_value")) {
+                message_contenu.setText(savedInstanceState.getString("message_value"));
+            }
+            if (savedInstanceState.containsKey("utilisateurs")) {
+                utilisateurs = (HashMap<String, Utilisateur>) savedInstanceState.getSerializable("utilisateurs");
+            }
+            lireMessages();
+        }
+        if (utilisateurs == null){
+            utilisateurs  = new HashMap<>();
+            referenceUtilisateurs.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Utilisateur utilisateur = snapshot.getValue(Utilisateur.class);
+                        if (utilisateur.aRejoint(idGroupe)) {
+                            utilisateurs.put(utilisateur.getId(), utilisateur);
+                        }
                     }
+                    lireMessages();
                 }
-                lireMessages(idGroupe);
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
+    }
 
-
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("message_value", message_contenu.getText().toString());
+        if (utilisateurs != null) {
+            savedInstanceState.putSerializable("utilisateurs", utilisateurs);
+        }
     }
 
     private void envoyerMessage(final String contenu) {
@@ -144,14 +159,10 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Utilisateur utilisateur = snapshot.getValue(Utilisateur.class);
-                    Log.d("UTIL", utilisateur.toString());
-                    /*if (utilisateur.getId().equals(firebaseUser.getUid())) {
-                        int a = 2;
-                    } else {*/
+                    if (!(utilisateur.getId().equals(firebaseUser.getUid()))) {
                         if (utilisateur.getIdGroupes().contains(idGroupe)) {
                             sendNotification(utilisateur.getId(), contenu);
-                            notify = false;
-                        /*}*/
+                        }
                     }
                 }
             }
@@ -196,8 +207,8 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    private void lireMessages(final String idGroupe) {
-        messages = new ArrayList<>();
+    private void lireMessages() {
+        messages = new ArrayList<Message>();
         referenceMessages.orderByChild("idGroupe").equalTo(idGroupe).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -208,20 +219,7 @@ public class MessageActivity extends AppCompatActivity {
                         messages.add(message);
                         messageAdapter = new MessageAdapter(MessageActivity.this, messages);
                         recyclerView.setAdapter(messageAdapter);
-                        Log.d("NP", utilisateursNomPrenom.size()+"");
-                        message.setUtilisateur(utilisateursNomPrenom.get(message.getIdUtilisateur()));
-                        /*referenceUtilisateurs.child(message.getIdUtilisateur()).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                Utilisateur utilisateur = dataSnapshot.getValue(Utilisateur.class);
-                                message.setUtilisateur(utilisateur);
-                                messages.add(message);
-                                messageAdapter = new MessageAdapter(MessageActivity.this, messages);
-                                recyclerView.setAdapter(messageAdapter);
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {}
-                        });*/
+                        message.setUtilisateur(utilisateurs.get(message.getIdUtilisateur()));
                     }
 
                 }

@@ -89,4 +89,6 @@
     <string name="meteo_description_802">Nuages ​​dispersés</string>
     <string name="meteo_description_612">Beaucoup de neige fondue</string>
     <string name="profil">profil</string>
+    <string name="Chargement">Chargement...</string>
+    <string name="message_description_trop_court">La description doit contenir au moins  5 caratères.</string>
 </resources>

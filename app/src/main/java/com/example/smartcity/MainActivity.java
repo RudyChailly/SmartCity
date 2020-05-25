@@ -1,23 +1,12 @@
 package com.example.smartcity;
 
 import android.Manifest;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Looper;
-import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,12 +29,9 @@ import com.example.smartcity.models.commerce.Commerce;
 import com.example.smartcity.models.commerce.offre.Offre;
 import com.example.smartcity.models.Ville;
 import com.example.smartcity.models.groupe.GroupeAdapter;
-import com.example.smartcity.ui.demarrage.Demarrage;
-import com.example.smartcity.ui.demarrage.Interets;
+import com.example.smartcity.ui.demarrage.ChoixInteretsActivity;
+import com.example.smartcity.ui.demarrage.DemarrageActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -59,7 +45,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
@@ -67,22 +52,19 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static ArrayList<Actualite> actualitesUtilisateur;
-    private static ArrayList<Commerce> commercesUtilisateur;
-    private static ArrayList<Offre> offresUtilisateur;
+    private static ArrayList actualitesUtilisateur;
+    private static ArrayList commercesUtilisateur;
+    private static ArrayList offresUtilisateur;
 
-    private static ArrayList<Groupe> groupesUtilisateur, groupesInterets;
+    private static ArrayList groupesUtilisateur, groupesInterets;
 
     private static ActualiteAdapter actualiteAdapter;
     private static OffreAdapter offreAdapter;
@@ -91,17 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static Utilisateur utilisateur;
 
-    private LocationManager locationManager;
-    private double latitude, longitude;
-    private FusedLocationProviderClient fusedLocationProviderClient;
-    LocationRequest locationRequest;
-    Location currentLocation;
-    TextView view_meteo_ville, view_meteo_temperature, view_meteo_description ;
-    ImageView view_meteo_image;
-    private static final String  METEO_API_URL = "https://api.weatherbit.io/v2.0/current?";
-    private static final String  METEO_API_KEY = "917505d4cbd4452cbf041818779d6a80";
 
-    Meteo meteo;
 
     private static DatabaseReference
             referenceActualites,
@@ -130,21 +102,88 @@ public class MainActivity extends AppCompatActivity {
 
         // Verifie que l'utilisateur est connecte
         if (firebaseUser != null) {
-            // Verifie que l'utilisateur a au moins un centre d'interet
             requestUtilisateur(firebaseUser);
+            if (savedInstanceState == null) {
+                requestUtilisateur(firebaseUser);
+            }
+            else {
+                if (savedInstanceState.containsKey("utilisateur")) {
+                    utilisateur = savedInstanceState.getParcelable("utilisteur");
+                }
+                else {
+                    requestUtilisateur(firebaseUser);
+                }
+                if (savedInstanceState.containsKey("meteo")) {
+                    meteo = (Meteo)savedInstanceState.getSerializable("meteo");
+                }
+                if (savedInstanceState.containsKey("actualitesUtilisateur")) {
+                    actualitesUtilisateur.clear();
+                    actualitesUtilisateur.addAll(savedInstanceState.getParcelableArrayList("actualitesUtilisateur"));
+                }
+                if (savedInstanceState.containsKey("commercesUtilisateurs")) {
+                    commercesUtilisateur.clear();
+                    commercesUtilisateur.addAll(savedInstanceState.getParcelableArrayList("commercesUtilisateurs"));
+                }
+                if (savedInstanceState.containsKey("offresUtilisateur")) {
+                    offresUtilisateur.clear();
+                    offresUtilisateur.addAll(savedInstanceState.getParcelableArrayList("offresUtilisateur"));
+                }
+                if (savedInstanceState.containsKey("groupesUtilisateur")) {
+                    groupesUtilisateur.clear();
+                    groupesUtilisateur.addAll(savedInstanceState.getParcelableArrayList("groupesUtilisateur"));
+                }
+                if (savedInstanceState.containsKey("groupesInterets")) {
+                    groupesInterets.clear();
+                    groupesInterets.addAll(savedInstanceState.getParcelableArrayList("groupesInterets"));
+                }
+            }
         }
         else {
-            Intent intent = new Intent(MainActivity.this, Demarrage.class);
+            Intent intent = new Intent(MainActivity.this, DemarrageActivity.class);
             startActivity(intent);
             finish();
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        if (utilisateur != null) {
+            savedInstanceState.putSerializable("utilisateur", utilisateur);
+        }
+        if (meteo != null) {
+            savedInstanceState.putSerializable("meteo", meteo);
+        }
+        if (actualitesUtilisateur != null) {
+            savedInstanceState.putParcelableArrayList("actualitesUtilisateur", actualitesUtilisateur);
+        }
+        if (commercesUtilisateur != null) {
+            savedInstanceState.putParcelableArrayList("commercesUtilisateur", commercesUtilisateur);
+        }
+        if (offresUtilisateur != null) {
+            savedInstanceState.putParcelableArrayList("offresUtilisateur", offresUtilisateur);
+        }
+        if (groupesUtilisateur != null) {
+            savedInstanceState.putParcelableArrayList("groupesUtilisateur", groupesUtilisateur);
+        }
+        if (groupesInterets != null) {
+            savedInstanceState.putParcelableArrayList("groupesInterets", groupesInterets);
+        }
+    }
+
     /******************************************** METEO ********************************************/
+    static final String  METEO_API_URL = "https://api.weatherbit.io/v2.0/current?";
+    static final String  METEO_API_KEY = "917505d4cbd4452cbf041818779d6a80";
+
+    Meteo meteo;
+    double latitude, longitude;
+    FusedLocationProviderClient fusedLocationProviderClient;
+    TextView view_meteo_ville, view_meteo_temperature, view_meteo_description ;
+    ImageView view_meteo_image;
+
     public void requestMeteo() {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = METEO_API_URL+"lat="+latitude+"&lon="+longitude+"&key="+METEO_API_KEY;
-        Log.d("URL", url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
@@ -169,7 +208,6 @@ public class MainActivity extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
-
     public void affichageMeteo() {
         if (meteo != null) {
             view_meteo_ville.setText(meteo.getVille());
@@ -177,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
             view_meteo_temperature.setText(meteo.getTemperature() + " °C");
         }
     }
-
     public void requestLocation(TextView view_meteo_ville, ImageView view_meteo_image, TextView view_meteo_temperature, TextView view_meteo_description) {
         this.view_meteo_ville = view_meteo_ville;
         this.view_meteo_image = view_meteo_image;
@@ -195,7 +232,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
     private void getLocation() {
         fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
@@ -212,6 +248,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /******************************************** UTILISATEURS ********************************************/
+
+
     public static void setUtilisateur(Utilisateur value) {
         utilisateur = value;
     }
@@ -229,7 +267,8 @@ public class MainActivity extends AppCompatActivity {
                 utilisateur = dataSnapshot.getValue(Utilisateur.class);
                 if (utilisateur.getIdInterets().size() == 0) {
                     finish();
-                    Intent intent = new Intent(MainActivity.this, Interets.class);
+                    Intent intent = new Intent(MainActivity.this, ChoixInteretsActivity.class);
+                    intent.putExtra("redirectToMainActivity", true);
                     startActivity(intent);
                 }
                 else {
@@ -247,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
 
     /******************************************** ACTUALITES ********************************************/
     public static void requestActualitesUtilisateur() {
-        if (actualiteAdapter.getCount() == 0) {
+        if (actualiteAdapter.getCount() == 0 && actualitesUtilisateur.size() == 0) {
             referenceActualites.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -286,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
 
     /******************************************** COMMERCES ********************************************/
     public static void requestCommercesUtilisateur() {
-        if (commerceAdapter.getCount() == 0) {
+        if (commerceAdapter.getCount() == 0 && commercesUtilisateur.size() == 0) {
             referenceCommerces.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshotCommerces) {
@@ -349,7 +388,7 @@ public class MainActivity extends AppCompatActivity {
 
     /******************************************** OFFRES ********************************************/
     public static void requestOffresUtilisateur() {
-        if (offreAdapter.getCount() == 0) {
+        if (offreAdapter.getCount() == 0 && offresUtilisateur.size() == 0) {
              referenceOffres.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -419,7 +458,7 @@ public class MainActivity extends AppCompatActivity {
 
     /******************************************** GROUPES ********************************************/
     public static void requestGroupesUtilisateur() {
-        if (groupeUtilisateurAdapter.getCount() == 0) {
+        if (groupeUtilisateurAdapter.getCount() == 0 && groupesUtilisateur.size() == 0) {
             referenceGroupes.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -463,7 +502,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public static void requestGroupesInteret() {
-        if (groupeInteretsAdapter.getCount() == 0) {
+        if (groupeInteretsAdapter.getCount() == 0 && groupesInterets.size() == 0) {
             referenceGroupes.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -557,6 +596,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void refresh() {
+        Log.d("REFRESH", "oui");
+
         actualitesUtilisateur.clear();
         requestActualitesUtilisateur();
         actualiteAdapter.notifyDataSetChanged();

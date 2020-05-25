@@ -3,7 +3,9 @@ package com.example.smartcity.models.groupe;
 import com.example.smartcity.models.Interet.Interet;
 import com.example.smartcity.models.Ville;
 
-public class Groupe {
+import java.io.Serializable;
+
+public class Groupe implements Serializable {
 
     private String id;
     private String nom;

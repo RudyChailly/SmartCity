@@ -3,7 +3,9 @@ package com.example.smartcity.models.commerce;
 import com.example.smartcity.models.Interet.Interet;
 import com.example.smartcity.models.Ville;
 
-public class Commerce {
+import java.io.Serializable;
+
+public class Commerce implements Serializable {
 
     private String id;
     private String nom, adresse;

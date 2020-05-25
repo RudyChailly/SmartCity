@@ -5,9 +5,10 @@ import com.example.smartcity.models.commerce.Commerce;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Offre {
+public class Offre implements Serializable {
 
     private String intitule, intituleCourt, description, date;
     private double prix;

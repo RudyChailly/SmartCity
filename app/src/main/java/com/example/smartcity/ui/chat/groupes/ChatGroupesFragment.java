@@ -2,23 +2,18 @@ package com.example.smartcity.ui.chat.groupes;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
 import com.example.smartcity.models.Utilisateur;
-import com.example.smartcity.models.actualite.ActualiteAdapter;
 import com.example.smartcity.models.groupe.Groupe;
-import com.example.smartcity.models.groupe.GroupeAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -72,7 +67,7 @@ public class ChatGroupesFragment extends Fragment {
     }
 
     public void creationGroupe() {
-        Intent creationGroupeIntent = new Intent(getContext(), CreationGroupe.class);
+        Intent creationGroupeIntent = new Intent(getContext(), CreationGroupeActivity.class);
         startActivity(creationGroupeIntent);
     }
 

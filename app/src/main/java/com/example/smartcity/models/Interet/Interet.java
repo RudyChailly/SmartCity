@@ -3,7 +3,9 @@ package com.example.smartcity.models.Interet;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Interet {
+import java.io.Serializable;
+
+public class Interet implements Serializable {
 
     private String id, nom, imageURL;
 

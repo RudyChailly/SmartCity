@@ -52,7 +52,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         if (holder.utilisateur != null && message.getUtilisateur() != null) {
             holder.utilisateur.setText(message.getUtilisateur().toString());
         }
-        if (holder.image != null && message.getUtilisateur().getImageURL() != null) {
+        if (holder.image != null && message.getUtilisateur() != null && message.getUtilisateur().getImageURL() != null) {
             Glide.with(context).load(message.getUtilisateur().getImageURL()).into(holder.image);
         }
     }

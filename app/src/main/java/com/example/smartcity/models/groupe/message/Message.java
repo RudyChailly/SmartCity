@@ -2,7 +2,9 @@ package com.example.smartcity.models.groupe.message;
 
 import com.example.smartcity.models.Utilisateur;
 
-public class Message {
+import java.io.Serializable;
+
+public class Message implements Serializable {
 
     private String idUtilisateur;
     private Utilisateur utilisateur;

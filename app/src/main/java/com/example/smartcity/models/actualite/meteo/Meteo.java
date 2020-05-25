@@ -4,7 +4,9 @@ import android.content.res.Resources;
 
 import com.example.smartcity.R;
 
-public class Meteo {
+import java.io.Serializable;
+
+public class Meteo implements Serializable {
 
     int temperature;
     String date, ville, ville_code, description;

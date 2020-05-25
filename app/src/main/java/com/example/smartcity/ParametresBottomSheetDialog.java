@@ -6,22 +6,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.smartcity.models.Interet.Interet;
 import com.example.smartcity.ui.EditionProfilActivity;
-import com.example.smartcity.ui.demarrage.Demarrage;
-import com.example.smartcity.ui.demarrage.Interets;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.example.smartcity.ui.demarrage.DemarrageActivity;
+import com.example.smartcity.ui.demarrage.ChoixInteretsActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.auth.FirebaseAuth;
-
-import java.security.spec.ECField;
 
 public class ParametresBottomSheetDialog extends BottomSheetDialogFragment {
 
@@ -45,7 +39,7 @@ public class ParametresBottomSheetDialog extends BottomSheetDialogFragment {
         parametres_bouton_interets.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent interetsIntent = new Intent(getContext(), Interets.class);
+                Intent interetsIntent = new Intent(getContext(), ChoixInteretsActivity.class);
                 interetsIntent.putExtra("idInteretsSelectionnes", MainActivity.getUtilisateur().getIdInterets());
                 startActivity(interetsIntent);
                 dismiss();
@@ -56,7 +50,7 @@ public class ParametresBottomSheetDialog extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                Intent demarrageIntent = new Intent(getContext(), Demarrage.class);
+                Intent demarrageIntent = new Intent(getContext(), DemarrageActivity.class);
                 startActivity(demarrageIntent);
                 getActivity().finish();
                 dismiss();

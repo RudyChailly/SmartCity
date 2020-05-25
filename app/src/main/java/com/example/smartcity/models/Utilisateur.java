@@ -4,9 +4,10 @@ import com.example.smartcity.models.actualite.Actualite;
 import com.example.smartcity.models.commerce.Commerce;
 import com.example.smartcity.models.groupe.Groupe;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Utilisateur {
+public class Utilisateur implements Serializable {
 
     private String id, nom, prenom, email, imageURL;
     private String idVille;

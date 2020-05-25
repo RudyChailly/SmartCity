@@ -6,12 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
 import com.example.smartcity.models.Interet.Interet;
@@ -22,45 +21,61 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
-public class Interets extends AppCompatActivity {
+public class ChoixInteretsActivity extends AppCompatActivity {
 
-    private ArrayList<Interet> interets;
-    private ArrayList<String> idInteretsSelectionnes;
-    private InteretAdapter interetAdapter;
-    private GridView gridView_interets;
-    private DatabaseReference referenceUtilisateur, referenceInterets;
+    ArrayList interets;
+    ArrayList idInteretsSelectionnes;
 
-    public Interets() {}
+    InteretAdapter interetAdapter;
+    GridView gridView_interets;
+    DatabaseReference referenceInterets;
+
+    public ChoixInteretsActivity() {}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_interets);
+        setContentView(R.layout.activity_choix_interets);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         referenceInterets = database.getReference("Interets");
-        interets = new ArrayList<>();
-        interetAdapter = new InteretAdapter(Interets.this, interets);
-        requestInterets();
+        interets = new ArrayList<Interet>();
+        idInteretsSelectionnes = new ArrayList<String>();
+
+        if (getIntent() != null && getIntent().hasExtra("idInteretsSelectionnes")) {
+            idInteretsSelectionnes = getIntent().getStringArrayListExtra("idInteretsSelectionnes");
+        }
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("interets")) {
+                interets = savedInstanceState.getParcelableArrayList("interets");
+            }
+            if (savedInstanceState.containsKey("idInteretsSelectionnes")) {
+                idInteretsSelectionnes = savedInstanceState.getParcelableArrayList("idInteretsSelectionnes");
+            }
+        }
+
+        interetAdapter = new InteretAdapter(ChoixInteretsActivity.this, interets);
         gridView_interets = findViewById(R.id.liste_interets);
         gridView_interets.setAdapter(interetAdapter);
-        idInteretsSelectionnes = new ArrayList<>();
-        /*if (getIntent() != null && getIntent().hasExtra("idInteretsSelectionnes")) {
-            ArrayList<String> idInteretsUtilisateur = getIntent().getStringArrayListExtra("idInteretsSelectionnes");
-            for (String idInteret : idInteretsUtilisateur) {
-                this.selectInteret(idInteret);
-            }
-        }*/
-        findViewById(R.id.bouton_interets).setOnClickListener(new View.OnClickListener() {
+
+        requestInterets();
+
+        findViewById(R.id.interets_valider).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 valider();
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putParcelableArrayList("interets", interets);
+        savedInstanceState.putParcelableArrayList("idInteretsSelectionnes", idInteretsSelectionnes);
     }
 
     public void requestInterets() {
@@ -83,13 +98,11 @@ public class Interets extends AppCompatActivity {
     public boolean estSelectionne(String id) {
         return idInteretsSelectionnes.contains(id);
     }
-
     public void selectInteret(String id) {
         if (!idInteretsSelectionnes.contains(id)) {
             idInteretsSelectionnes.add(id);
         }
     }
-
     public void deselectInteret(String id) {
         if (idInteretsSelectionnes.contains(id)) {
             idInteretsSelectionnes.remove(id);
@@ -103,7 +116,7 @@ public class Interets extends AppCompatActivity {
         else {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             database.getReference("Utilisateurs").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("idInterets").setValue(idInteretsSelectionnes);
-            if (getIntent() != null && getIntent().hasExtra("redirectToMainActivity") && getIntent().getBooleanExtra("redirectToMainActivity", true) == true) {
+            if (getIntent() != null && getIntent().hasExtra("redirectToMainActivity") && getIntent().getBooleanExtra("redirectToMainActivity", false) == true) {
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);

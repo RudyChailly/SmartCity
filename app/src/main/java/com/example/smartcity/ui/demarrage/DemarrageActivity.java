@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Demarrage extends AppCompatActivity {
+public class DemarrageActivity extends AppCompatActivity {
 
     private FirebaseUser firebaseUser;
 
@@ -31,7 +31,7 @@ public class Demarrage extends AppCompatActivity {
 
         // Verifie si l'utilisateur est connecté
         if (firebaseUser != null) {
-            Intent intent = new Intent(Demarrage.this, MainActivity.class);
+            Intent intent = new Intent(DemarrageActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         }
@@ -43,12 +43,10 @@ public class Demarrage extends AppCompatActivity {
 
     private void setViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
         adapter.addFragment(new ConnexionFragment(), getResources().getString(R.string.connexion).toUpperCase());
         adapter.addFragment(new InscriptionFragment(), getResources().getString(R.string.inscription).toUpperCase());
         viewPager.setAdapter(adapter);
     }
-
     public class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();

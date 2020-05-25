@@ -15,9 +15,7 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
-import com.example.smartcity.ui.demarrage.Interets;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.example.smartcity.ui.demarrage.ChoixInteretsActivity;
 
 import java.util.List;
 
@@ -43,24 +41,23 @@ public class InteretAdapter extends ArrayAdapter<Interet> {
         }
         viewHolder.nom.setText(interet.getNom());
         final InteretViewHolder finalViewHolder = viewHolder;
-        if (MainActivity.getUtilisateur() != null && MainActivity.getUtilisateur().getIdInterets().contains(interet.getId())) {
+        if (((ChoixInteretsActivity)getContext()).estSelectionne(interet.getId())) {
             finalViewHolder.image.setBackgroundColor(getContext().getResources().getColor(R.color.blue));
             finalViewHolder.nom.setTextColor(getContext().getResources().getColor(R.color.blue));
-            ((Interets)getContext()).selectInteret(interet.getId());
         }
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getContext().getClass().equals(Interets.class)) {
-                    if (((Interets)getContext()).estSelectionne(interet.getId())) {
+                if (getContext().getClass().equals(ChoixInteretsActivity.class)) {
+                    if (((ChoixInteretsActivity)getContext()).estSelectionne(interet.getId())) {
                         finalViewHolder.image.setBackgroundColor(Color.TRANSPARENT);
                         finalViewHolder.nom.setTextColor(getContext().getResources().getColor(R.color.grey));
-                        ((Interets)getContext()).deselectInteret(interet.getId());
+                        ((ChoixInteretsActivity)getContext()).deselectInteret(interet.getId());
                     }
                     else {
                         finalViewHolder.image.setBackgroundColor(getContext().getResources().getColor(R.color.blue));
                         finalViewHolder.nom.setTextColor(getContext().getResources().getColor(R.color.blue));
-                        ((Interets)getContext()).selectInteret(interet.getId());
+                        ((ChoixInteretsActivity)getContext()).selectInteret(interet.getId());
                     }
                 }
             }

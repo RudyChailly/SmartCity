@@ -40,7 +40,7 @@
             />
         <!-- Footer -->
         <Button
-            android:id="@+id/bouton_interets"
+            android:id="@+id/interets_valider"
             android:layout_weight="1"
             android:textSize="16dp"
             android:layout_alignParentBottom="true"
@@ -59,7 +59,7 @@
             android:id="@+id/liste_interets"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/bouton_interets"
+            android:layout_above="@id/interets_valider"
             android:layout_below="@id/message_interets"
             android:textColor="@android:color/white"
             android:textSize="24sp"

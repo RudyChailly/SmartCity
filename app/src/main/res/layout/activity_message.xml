@@ -35,25 +35,25 @@
         android:divider="@null"
         android:background="@color/background"
         android:paddingBottom="16dp"
-        android:layout_above="@+id/message_envoyer"/>
+        android:layout_above="@+id/message_champ"/>
 
     <RelativeLayout
-        android:id="@+id/message_envoyer"
+        android:id="@+id/message_champ"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:layout_alignParentBottom="true">
 
         <EditText
-            android:id="@+id/message_champs"
+            android:id="@+id/message_contenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/message_bouton"
+            android:layout_toLeftOf="@+id/message_envoyer"
             android:hint="@string/message_placeholder"
             android:layout_centerVertical="true"/>
 
         <ImageButton
-            android:id="@+id/message_bouton"
+            android:id="@+id/message_envoyer"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"

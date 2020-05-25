@@ -36,7 +36,7 @@
         android:textSize="16dp"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:id="@+id/connexion_envoyer"
+        android:id="@+id/connexion_valider"
         android:text="@string/valider"
         android:textColor="@color/white"
         android:textStyle="bold"

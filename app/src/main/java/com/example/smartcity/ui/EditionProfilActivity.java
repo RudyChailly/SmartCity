@@ -8,7 +8,6 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -16,20 +15,16 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.smartcity.MainActivity;
 import com.example.smartcity.R;
 import com.example.smartcity.models.Utilisateur;
-import com.example.smartcity.ui.chat.groupes.CreationGroupe;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -40,21 +35,21 @@ import com.google.firebase.storage.UploadTask;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import okhttp3.internal.Util;
 
 public class EditionProfilActivity extends AppCompatActivity {
 
     TextView edition_email;
     EditText edition_prenom, edition_nom;
+    String email_value, prenom_value, nom_value;
     CircleImageView edition_image;
     Button edition_valider;
 
     Utilisateur utilisateur;
 
     StorageReference storageReference;
-    private static final int IMAGE_REQUEST = 1;
-    private Uri imageUri;
-    private StorageTask uploadTask;
+    static final int IMAGE_REQUEST = 1;
+    StorageTask uploadTask;
+    Uri imageUri;
     String uploadImageUri;
 
     @Override
@@ -77,6 +72,28 @@ public class EditionProfilActivity extends AppCompatActivity {
             Glide.with(this).load(utilisateur.getImageURL()).into(edition_image);
         }
 
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("email_value")) {
+                email_value = savedInstanceState.getString("email_value");
+                edition_email.setText(email_value);
+            }
+            if (savedInstanceState.containsKey("nom_value")) {
+                nom_value = savedInstanceState.getString("nom_value");
+                edition_nom.setText(nom_value);
+            }
+            if (savedInstanceState.containsKey("prenom_value")) {
+                prenom_value = savedInstanceState.getString("prenom_value");
+                edition_prenom.setText(prenom_value);
+            }
+            if (savedInstanceState.containsKey("imageUri")) {
+                imageUri = savedInstanceState.getParcelable("imageUri");
+                edition_image.setImageURI(imageUri);
+            }
+            if (savedInstanceState.containsKey("uploadImageUri")) {
+                uploadImageUri = savedInstanceState.getString("uploadImageUri");
+            }
+        }
+
         edition_valider.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,7 +106,7 @@ public class EditionProfilActivity extends AppCompatActivity {
                     showDialogError(getResources().getString(R.string.prenom_requis));
                 }
                 else {
-                    edition(utilisateur, prenomValue, nomValue);
+                    valider(utilisateur, prenomValue, nomValue);
                 }
             }
         });
@@ -105,7 +122,27 @@ public class EditionProfilActivity extends AppCompatActivity {
 
     }
 
-    private void edition(final Utilisateur utilisateur, final String prenom, final String nom) {
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        if (edition_email != null) {
+            savedInstanceState.putString("email_value", edition_email.getText().toString());
+        }
+        if (edition_prenom != null) {
+            savedInstanceState.putString("prenom_value", edition_prenom.getText().toString());
+        }
+        if (edition_nom != null) {
+            savedInstanceState.putString("nom_value", edition_nom.getText().toString());
+        }
+        if (imageUri != null) {
+            savedInstanceState.putParcelable("imageUri", imageUri);
+        }
+        if (uploadImageUri != null) {
+            savedInstanceState.putString("uploadImageUri", uploadImageUri);
+        }
+    }
+
+    private void valider(final Utilisateur utilisateur, final String prenom, final String nom) {
         HashMap<String, Object> values = new HashMap<>();
         values.put("prenom", prenom);
         values.put("nom", nom);
@@ -153,10 +190,7 @@ public class EditionProfilActivity extends AppCompatActivity {
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
             edition_image.setImageURI(imageUri);
-            if (uploadTask != null && uploadTask.isInProgress()) {
-                Toast.makeText(this, "Upload en cours", Toast.LENGTH_SHORT).show();
-            }
-            else {
+            if (!(uploadTask != null && uploadTask.isInProgress())) {
                 uploadImage();
             }
         }
@@ -170,7 +204,7 @@ public class EditionProfilActivity extends AppCompatActivity {
 
     private void uploadImage() {
         final ProgressDialog pd = new ProgressDialog(this);
-        pd.setMessage("Uploading");
+        pd.setMessage(getResources().getString(R.string.Chargement));
         pd.show();
 
         if (imageUri != null) {
@@ -178,7 +212,6 @@ public class EditionProfilActivity extends AppCompatActivity {
             fileReference.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(EditionProfilActivity.this, "Image chargée", Toast.LENGTH_SHORT).show();
                     fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
@@ -190,7 +223,6 @@ public class EditionProfilActivity extends AppCompatActivity {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(EditionProfilActivity.this, "ERREUR", Toast.LENGTH_SHORT).show();
                     pd.dismiss();
                 }
             });

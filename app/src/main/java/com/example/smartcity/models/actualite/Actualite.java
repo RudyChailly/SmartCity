@@ -2,7 +2,9 @@ package com.example.smartcity.models.actualite;
 
 import com.example.smartcity.models.Interet.Interet;
 
-public class Actualite {
+import java.io.Serializable;
+
+public class Actualite implements Serializable {
     public void setTitre(String titre) {
         this.titre = titre;
     }

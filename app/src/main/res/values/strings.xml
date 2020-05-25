@@ -91,4 +91,6 @@
     <string name="meteo_description_804">Overcast clouds</string>
     <string name="meteo_description_805">Unknown Precipitation</string>
     <string name="profil">profile</string>
+    <string name="Chargement">Uploading...</string>
+    <string name="message_description_trop_court">Description must be at least 5 characters.</string>
 </resources>

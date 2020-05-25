@@ -3,9 +3,10 @@ package com.example.smartcity.models;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Ville {
+public class Ville implements Serializable {
     private String nom, code;
 
     public Ville() {}

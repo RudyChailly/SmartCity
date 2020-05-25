@@ -57,7 +57,7 @@ public class ActualitesNewsFragment extends Fragment {
             });
         }
         else {
-            ((MainActivity)getActivity()).requestActualitesUtilisateur();
+            ((MainActivity) getActivity()).requestActualitesUtilisateur();
         }
         listView_actualites.setAdapter(((MainActivity)getActivity()).getActualiteAdapter());
         return view;
