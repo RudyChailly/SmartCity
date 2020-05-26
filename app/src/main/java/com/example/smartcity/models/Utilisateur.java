@@ -1,8 +1,4 @@
-package com.example.smartcity.models;
-
-import com.example.smartcity.models.actualite.Actualite;
-import com.example.smartcity.models.commerce.Commerce;
-import com.example.smartcity.models.groupe.Groupe;
+package com.example.smartcity.Models;
 
 import java.io.Serializable;
 import java.util.ArrayList;

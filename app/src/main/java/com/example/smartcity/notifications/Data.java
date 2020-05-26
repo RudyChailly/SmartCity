@@ -1,6 +1,6 @@
-package com.example.smartcity.notifications;
+package com.example.smartcity.Notifications;
 
-import com.example.smartcity.models.Utilisateur;
+import com.example.smartcity.Models.Utilisateur;
 
 public class Data {
     private String user, body, title, sented, idGroupe, nomGroupe;

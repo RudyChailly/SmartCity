@@ -1,4 +1,4 @@
-package com.example.smartcity.notifications;
+package com.example.smartcity.Notifications;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -10,11 +10,7 @@ import android.content.ContextWrapper;
 import android.net.Uri;
 import android.os.Build;
 
-import androidx.core.app.NotificationCompat;
-
 import com.example.smartcity.R;
-
-import java.lang.annotation.Target;
 
 public class OreoNotification extends ContextWrapper {
 

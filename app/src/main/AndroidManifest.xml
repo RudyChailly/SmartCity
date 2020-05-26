@@ -17,21 +17,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.EditionProfilActivity"  android:screenOrientation="portrait" />
-        <activity android:name=".ui.chat.groupes.CreationGroupeActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ui.chat.messages.MessageActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.demarrage.DemarrageActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".MainActivity" android:screenOrientation="portrait">
+        <activity android:name=".Activities.EditionProfilActivity"  android:screenOrientation="portrait" />
+        <activity android:name=".Activities.CreationGroupeActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".Activities.MessageActivity" android:screenOrientation="portrait" />
+        <activity android:name=".Activities.DemarrageActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".Activities.MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.demarrage.ChoixInteretsActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".Activities.ChoixInteretsActivity" android:screenOrientation="portrait"/>
 
         <service
-            android:name=".notifications.MyFirebaseIdService"
+            android:name=".Notifications.MyFirebaseIdService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -39,7 +39,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".notifications.MyFirebaseMessaging"
+            android:name=".Notifications.MyFirebaseMessaging"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

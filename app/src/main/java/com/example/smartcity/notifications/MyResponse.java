@@ -1,4 +1,4 @@
-package com.example.smartcity.notifications;
+package com.example.smartcity.Notifications;
 
 public class MyResponse {
 

@@ -1,4 +1,4 @@
-package com.example.smartcity.notifications;
+package com.example.smartcity.Notifications;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

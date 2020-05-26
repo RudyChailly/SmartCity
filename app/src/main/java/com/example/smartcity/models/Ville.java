@@ -1,10 +1,6 @@
-package com.example.smartcity.models;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+package com.example.smartcity.Models;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class Ville implements Serializable {
     private String nom, code;

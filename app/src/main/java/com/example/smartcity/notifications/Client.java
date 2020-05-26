@@ -1,4 +1,4 @@
-package com.example.smartcity.notifications;
+package com.example.smartcity.Notifications;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
