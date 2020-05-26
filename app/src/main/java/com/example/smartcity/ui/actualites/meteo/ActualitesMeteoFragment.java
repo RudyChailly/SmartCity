@@ -27,11 +27,6 @@ import com.example.smartcity.R;
 
 public class ActualitesMeteoFragment extends Fragment {
 
-    private LocationManager locationManager;
-    TextView actualite_meteo_lat_value;
-    TextView actualite_meteo_long_value;
-    Button actualite_meteo_bouton;
-
     public ActualitesMeteoFragment(){}
 
     @Override
@@ -48,7 +43,7 @@ public class ActualitesMeteoFragment extends Fragment {
         ImageView view_meteo_image = view.findViewById(R.id.meteo_image);
         TextView view_meteo_temperature = view.findViewById(R.id.meteo_temperature);
         TextView view_meteo_description = view.findViewById(R.id.meteo_description);
-        //((MainActivity)getActivity()).requestLocation(view_meteo_ville, view_meteo_image, view_meteo_temperature, view_meteo_description);
+        ((MainActivity)getActivity()).requestLocation(view_meteo_ville, view_meteo_image, view_meteo_temperature, view_meteo_description);
         return view;
     }
 

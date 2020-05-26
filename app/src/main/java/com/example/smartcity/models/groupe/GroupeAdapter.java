@@ -49,7 +49,6 @@ public class GroupeAdapter extends ArrayAdapter<Groupe> {
         else {
             viewHolder = (GroupeViewHolder) convertView.getTag();
         }
-        viewHolder.image.setImageResource(R.drawable.placeholder_600);
         final Groupe groupe = getItem(position);
         Log.d(groupe.getNom(), "-"+groupe.getDescription());
 

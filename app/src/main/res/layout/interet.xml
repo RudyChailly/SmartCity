@@ -16,8 +16,7 @@
         android:layout_gravity="center"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/placeholder_600" />
+        android:background="@android:color/transparent" />
 
         <TextView
             android:id="@+id/interet_nom"

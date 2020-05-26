@@ -17,6 +17,7 @@ import com.example.smartcity.models.commerce.Commerce;
 
 import org.w3c.dom.Text;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class OffreAdapter extends ArrayAdapter<Offre> {
@@ -47,7 +48,8 @@ public class OffreAdapter extends ArrayAdapter<Offre> {
         if (offre.getImageURL() != null) {
             Glide.with(getContext()).load(offre.getImageURL()).into(viewHolder.image);
         }
-        viewHolder.prix.setText(offre.getPrix()+" €");
+        DecimalFormat df = new DecimalFormat("0.00");
+        viewHolder.prix.setText(df.format(offre.getPrix()) +" €");
 
         // TODO: viewHolder.image
 

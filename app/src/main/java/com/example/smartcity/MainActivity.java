@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
                             String meteo_ville = jsonMeteo.getString("city_name");
                             int meteo_temperature = jsonMeteo.getInt("temp");
                             String meteo_code = jsonMeteo.getJSONObject("weather").getString("code");
-                            meteo = new Meteo(getResources(), getPackageName(), meteo_temperature, meteo_ville, meteo_code);
+                            meteo = new Meteo(getResources(), getPackageName(), meteo_temperature, meteo_ville, "802");
 
                             affichageMeteo();
                         } catch (JSONException e) {
@@ -210,9 +210,16 @@ public class MainActivity extends AppCompatActivity {
     }
     public void affichageMeteo() {
         if (meteo != null) {
-            view_meteo_ville.setText(meteo.getVille());
-            view_meteo_description.setText(meteo.getDescription());
+            if (meteo.getVille() != null) {
+                view_meteo_ville.setText(meteo.getVille());
+            }
+            if (meteo.getDescription() != null) {
+                view_meteo_description.setText(meteo.getDescription());
+            }
             view_meteo_temperature.setText(meteo.getTemperature() + " °C");
+            if (meteo.getImage() > 0) {
+                view_meteo_image.setImageResource(meteo.getImage());
+            }
         }
     }
     public void requestLocation(TextView view_meteo_ville, ImageView view_meteo_image, TextView view_meteo_temperature, TextView view_meteo_description) {
